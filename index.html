@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="BIN-GO" />
+  <link rel="manifest" href="/manifest.json" />
+  <title>BIN-GO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@zxing/browser@0.1.1/umd/index.min.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1e1e1e;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.15);
+      --green: #00e676;
+      --green-dim: rgba(0,230,118,0.12);
+      --green-mid: rgba(0,230,118,0.25);
+      --text: #f0f0f0;
+      --text2: #888;
+      --text3: #555;
+      --mono: 'Space Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); overflow: hidden; }
+    
+    /* App shell */
+    #app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+    
+    /* Screens */
+    .screen { display: none; flex: 1; overflow-y: auto; overflow-x: hidden; padding: 0; animation: fadeIn 0.2s ease; }
+    .screen.active { display: flex; flex-direction: column; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Header */
+    .header { padding: 52px 24px 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
+    .logo { font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
+    .logo em { color: var(--green); font-style: normal; }
+    .tagline { font-size: 11px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; font-family: var(--mono); }
+    .ticket-count { text-align: right; }
+    .ticket-num { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--green); line-height: 1; }
+    .ticket-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
+    /* Scan button */
+    .scan-wrap { padding: 0 24px; flex-shrink: 0; }
+    .scan-btn { width: 100%; height: 180px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s, background 0.2s; }
+    .scan-btn:active { background: var(--surface2); border-color: var(--green); }
+    .scan-btn::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 120%, rgba(0,230,118,0.06) 0%, transparent 70%); pointer-events: none; }
+    .scan-corners span { position: absolute; width: 20px; height: 20px; border-color: var(--green); border-style: solid; opacity: 0.7; }
+    .scan-corners span:nth-child(1) { top: 14px; left: 14px; border-width: 2px 0 0 2px; border-radius: 3px 0 0 0; }
+    .scan-corners span:nth-child(2) { top: 14px; right: 14px; border-width: 2px 2px 0 0; border-radius: 0 3px 0 0; }
+    .scan-corners span:nth-child(3) { bottom: 14px; left: 14px; border-width: 0 0 2px 2px; border-radius: 0 0 0 3px; }
+    .scan-corners span:nth-child(4) { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; border-radius: 0 0 3px 0; }
+    .scan-icon-ring { width: 60px; height: 60px; border: 1.5px solid var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--green-dim); }
+    .scan-icon-ring svg { width: 26px; height: 26px; }
+    .scan-label { font-size: 13px; color: var(--text2); letter-spacing: 0.04em; }
+
+    /* Stats row */
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 24px 0; flex-shrink: 0; }
+    .stat { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+    .stat-val { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--text); }
+    .stat-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+    /* History */
+    .section-title { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono); padding: 20px 24px 10px; flex-shrink: 0; }
+    .scan-list { padding: 0 24px 100px; display: flex; flex-direction: column; gap: 8px; }
+    .scan-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .scan-item-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .scan-item-meta { font-size: 11px; color: var(--text3); margin-top: 3px; }
+    .ticket-badge { font-family: var(--mono); font-size: 11px; color: var(--green); background: var(--green-dim); border: 0.5px solid rgba(0,230,118,0.2); padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
+
+    /* Terms */
+    .terms { font-size: 11px; color: var(--text3); text-align: center; padding: 16px 24px 32px; line-height: 1.6; flex-shrink: 0; }
+    .terms a { color: var(--green); text-decoration: none; }
+
+    /* Scanning screen */
+    #scanning { background: #000; }
+    .camera-wrap { flex: 1; position: relative; overflow: hidden; }
+    #video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .camera-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+    .camera-frame { width: 220px; height: 220px; position: relative; }
+    .camera-frame span { position: absolute; width: 28px; height: 28px; border-color: var(--green); border-style: solid; }
+    .camera-frame span:nth-child(1) { top: 0; left: 0; border-width: 3px 0 0 3px; }
+    .camera-frame span:nth-child(2) { top: 0; right: 0; border-width: 3px 3px 0 0; }
+    .camera-frame span:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 3px 3px; }
+    .camera-frame span:nth-child(4) { bottom: 0; right: 0; border-width: 0 3px 3px 0; }
+    .scan-line { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--green), transparent); animation: scanLine 2s ease-in-out infinite; top: 50%; }
+    @keyframes scanLine { 0%, 100% { top: 10%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 50% { top: 90%; } }
+    .camera-hint { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 24px; text-align: center; font-family: var(--mono); letter-spacing: 0.04em; }
+    .gps-pill { margin-top: 12px; background: rgba(0,230,118,0.15); border: 0.5px solid rgba(0,230,118,0.3); border-radius: 20px; padding: 5px 14px; font-size: 11px; color: var(--green); font-family: var(--mono); display: flex; align-items: center; gap: 6px; }
+    .gps-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .camera-actions { padding: 24px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+
+    /* Buttons */
+    .btn { width: 100%; padding: 14px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: transparent; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; font-family: var(--sans); transition: background 0.15s; }
+    .btn:active { background: var(--surface2); }
+    .btn-primary { background: var(--green); border-color: var(--green); color: #000; font-weight: 600; }
+    .btn-primary:active { background: #00c060; }
+    .btn-ghost { border-color: transparent; color: var(--text3); }
+
+    /* Result screen */
+    .result-header { padding: 52px 24px 0; text-align: center; flex-shrink: 0; }
+    .result-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--green-dim); border: 1.5px solid rgba(0,230,118,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .result-icon svg { width: 28px; height: 28px; }
+    .result-title { font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--text); }
+    .result-sub { font-size: 14px; color: var(--text2); margin-top: 6px; }
+
+    .ticket-card { margin: 20px 24px 0; background: var(--surface); border: 1px dashed rgba(0,230,118,0.3); border-radius: var(--radius-lg); padding: 20px; text-align: center; position: relative; overflow: hidden; }
+    .ticket-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(0,230,118,0.08) 0%, transparent 60%); pointer-events: none; }
+    .ticket-num-large { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--green); letter-spacing: 3px; }
+    .ticket-sub { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; font-family: var(--mono); }
+
+    .data-card { margin: 12px 24px 0; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; flex-shrink: 0; }
+    .data-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
+    .data-row:last-child { border-bottom: none; }
+    .data-key { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+    .data-val { font-size: 13px; color: var(--text); text-align: right; max-width: 60%; word-break: break-all; }
+    .data-val.mono { font-family: var(--mono); font-size: 12px; color: var(--green); }
+
+    .result-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+
+    /* Email screen */
+    .email-wrap { padding: 52px 24px 0; flex: 1; }
+    .email-title { font-family: var(--mono); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .email-sub { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 28px; }
+    .field label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--mono); display: block; margin-bottom: 8px; }
+    .field input { width: 100%; padding: 14px 16px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 16px; color: var(--text); font-family: var(--sans); outline: none; transition: border-color 0.2s; }
+    .field input:focus { border-color: var(--green); }
+    .email-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+
+    /* Empty state */
+    .empty { text-align: center; padding: 32px 24px; color: var(--text3); font-size: 13px; }
+    
+    /* Error toast */
+    .toast { position: fixed; bottom: 24px; left: 24px; right: 24px; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 14px 16px; font-size: 14px; color: var(--text); z-index: 100; transform: translateY(80px); opacity: 0; transition: all 0.3s ease; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { border-color: #ff5252; color: #ff5252; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HOME SCREEN -->
+  <div id="home" class="screen active">
+    <div class="header">
+      <div>
+        <div class="logo">BIN<em>-GO</em></div>
+        <div class="tagline">Bin it. Track it. Win it.</div>
+      </div>
+      <div class="ticket-count">
+        <div class="ticket-num" id="ticket-count">0</div>
+        <div class="ticket-lbl">tickets</div>
+      </div>
+    </div>
+
+    <div class="scan-wrap">
+      <div class="scan-btn" onclick="startScan()">
+        <div class="scan-corners">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="scan-icon-ring">
+          <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="7" height="7" rx="1" stroke="#00e676" stroke-width="1.5"/>
+            <rect x="16" y="3" width="7" height="7" rx="1" stroke="#00e676" stroke-width="1.5"/>
+            <rect x="3" y="16" width="7" height="7" rx="1" stroke="#00e676" stroke-width="1.5"/>
+            <rect x="5" y="5" width="3" height="3" fill="#00e676"/>
+            <rect x="18" y="5" width="3" height="3" fill="#00e676"/>
+            <rect x="5" y="18" width="3" height="3" fill="#00e676"/>
+            <rect x="16" y="16" width="2" height="2" fill="#00e676"/>
+            <rect x="20" y="16" width="2" height="2" fill="#00e676"/>
+            <rect x="16" y="20" width="2" height="2" fill="#00e676"/>
+            <rect x="20" y="20" width="2" height="2" fill="#00e676"/>
+          </svg>
+        </div>
+        <div class="scan-label">tap to scan barcode</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-val" id="today-count">0</div>
+        <div class="stat-lbl">today</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="total-count">0</div>
+        <div class="stat-lbl">total scans</div>
+      </div>
+    </div>
+
+    <div class="section-title">recent scans</div>
+    <div class="scan-list" id="scan-list">
+      <div class="empty">no scans yet — bin something to start!</div>
+    </div>
+
+    <div class="terms">
+      By scanning you agree to the <a href="#" onclick="showTerms()">T&amp;Cs</a> · Free to enter · No purchase necessary
+    </div>
+  </div>
+
+  <!-- SCANNING SCREEN -->
+  <div id="scanning" class="screen">
+    <div class="camera-wrap">
+      <video id="video" autoplay muted playsinline></video>
+      <div class="camera-overlay">
+        <div class="camera-frame">
+          <span></span><span></span><span></span><span></span>
+          <div class="scan-line"></div>
+        </div>
+        <div class="camera-hint">point at GS1 barcode</div>
+        <div class="gps-pill">
+          <div class="gps-dot"></div>
+          <span id="gps-status">locating...</span>
+        </div>
+      </div>
+    </div>
+    <div class="camera-actions">
+      <button class="btn btn-ghost" onclick="stopScan()">cancel</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result" class="screen">
+    <div class="result-header">
+      <div class="result-icon">
+        <svg viewBox="0 0 28 28" fill="none"><path d="M5 14l7 7L23 7" stroke="#00e676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="result-title">binned!</div>
+      <div class="result-sub" id="result-product">product scanned</div>
+    </div>
+
+    <div class="ticket-card">
+      <div class="ticket-num-large" id="result-ticket">—</div>
+      <div class="ticket-sub">your prize draw ticket</div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-row">
+        <span class="data-key">barcode</span>
+        <span class="data-val mono" id="result-barcode">—</span>
+      </div>
+      <div class="data-row">
+        <span class="data-key">format</span>
+        <span class="data-val" id="result-format">—</span>
+      </div>
+      <div class="data-row">
+        <span class="data-key">location</span>
+        <span class="data-val" id="result-location">—</span>
+      </div>
+      <div class="data-row">
+        <span class="data-key">accuracy</span>
+        <span class="data-val" id="result-accuracy">—</span>
+      </div>
+      <div class="data-row">
+        <span class="data-key">time</span>
+        <span class="data-val" id="result-time">—</span>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-primary" onclick="showScreen('email')">save my ticket</button>
+      <button class="btn" onclick="showScreen('home')">skip for now</button>
+    </div>
+  </div>
+
+  <!-- EMAIL SCREEN -->
+  <div id="email" class="screen">
+    <div class="email-wrap">
+      <div class="email-title">save your ticket</div>
+      <div class="email-sub">enter your email to back up your tickets. you only need to register if you win — we'll never spam you.</div>
+      <div class="field">
+        <label>email address</label>
+        <input type="email" id="email-input" placeholder="you@example.com" />
+      </div>
+    </div>
+    <div class="email-actions">
+      <button class="btn btn-primary" onclick="saveEmail()">send me a backup link</button>
+      <button class="btn btn-ghost" onclick="showScreen('home')">not now</button>
+      <p class="terms">we only contact you if you win · <a href="#">privacy policy</a></p>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const SUPABASE_URL = 'https://moaszzhcqnhhlemdgurq.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_lms1xSA7h0rcI_K27ajYmQ_zCAHu-sw';
+
+  let currentScan = null;
+  let gpsCoords = null;
+  let codeReader = null;
+  let scanStream = null;
+
+  // --- Storage helpers ---
+  function getScans() {
+    try { return JSON.parse(localStorage.getItem('bingo_scans') || '[]'); } catch { return []; }
+  }
+  function saveScans(scans) {
+    localStorage.setItem('bingo_scans', JSON.stringify(scans));
+  }
+  function getDeviceId() {
+    let id = localStorage.getItem('bingo_device_id');
+    if (!id) { id = 'dev_' + Math.random().toString(36).slice(2, 12); localStorage.setItem('bingo_device_id', id); }
+    return id;
+  }
+  function generateTicketId() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const seq = (getScans().length + 1).toString().padStart(4, '0');
+    return `BG-${y}-${seq}`;
+  }
+
+  // --- Screen navigation ---
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // --- Toast ---
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  // --- GPS ---
+  function getGPS() {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) { resolve(null); return; }
+      navigator.geolocation.getCurrentPosition(
+        pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy }),
+        () => resolve(null),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    });
+  }
+
+  // --- Start scan ---
+  async function startScan() {
+    showScreen('scanning');
+    document.getElementById('gps-status').textContent = 'locating...';
+    
+    // Start GPS in parallel
+    getGPS().then(coords => {
+      gpsCoords = coords;
+      if (coords) {
+        const lat = coords.lat.toFixed(4);
+        const lng = coords.lng.toFixed(4);
+        document.getElementById('gps-status').textContent = `${lat}, ${lng}`;
+      } else {
+        document.getElementById('gps-status').textContent = 'GPS unavailable';
+      }
+    });
+
+    // Start camera
+    try {
+      if (typeof ZXingBrowser !== 'undefined') {
+        codeReader = new ZXingBrowser.BrowserMultiFormatReader();
+        const videoEl = document.getElementById('video');
+        scanStream = await codeReader.decodeFromVideoDevice(undefined, videoEl, (result, err) => {
+          if (result) {
+            handleScanResult(result.getText(), result.getBarcodeFormat().toString());
+          }
+        });
+      } else {
+        // Fallback: use getUserMedia only, no decode
+        scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        document.getElementById('video').srcObject = scanStream;
+        showToast('scanner library loading — try again shortly');
+      }
+    } catch (e) {
+      showToast('camera access denied', true);
+      showScreen('home');
+    }
+  }
+
+  // --- Stop scan ---
+  function stopScan() {
+    if (codeReader) { try { codeReader.reset(); } catch {} codeReader = null; }
+    if (scanStream) { try { scanStream.getTracks?.().forEach(t => t.stop()); } catch {} scanStream = null; }
+    const video = document.getElementById('video');
+    video.srcObject = null;
+    showScreen('home');
+  }
+
+  // --- Handle scan result ---
+  async function handleScanResult(barcodeValue, format) {
+    stopScan();
+
+    const ticketId = generateTicketId();
+    const now = new Date();
+    const scan = {
+      ticket_id: ticketId,
+      barcode: barcodeValue,
+      format: format || 'GS1',
+      lat: gpsCoords?.lat || null,
+      lng: gpsCoords?.lng || null,
+      accuracy: gpsCoords?.accuracy || null,
+      timestamp: now.toISOString(),
+      device_id: getDeviceId(),
+      synced: false
+    };
+
+    // Save locally
+    const scans = getScans();
+    scans.unshift(scan);
+    saveScans(scans);
+    currentScan = scan;
+
+    // Try to sync to Supabase
+    syncScan(scan);
+
+    // Update result screen
+    document.getElementById('result-product').textContent = barcodeValue.length > 30 ? barcodeValue.slice(0, 30) + '...' : barcodeValue;
+    document.getElementById('result-ticket').textContent = ticketId;
+    document.getElementById('result-barcode').textContent = barcodeValue;
+    document.getElementById('result-format').textContent = format || 'GS1';
+    document.getElementById('result-location').textContent = gpsCoords
+      ? `${gpsCoords.lat.toFixed(4)}°N ${Math.abs(gpsCoords.lng).toFixed(4)}°W`
+      : 'unavailable';
+    document.getElementById('result-accuracy').textContent = gpsCoords
+      ? `±${Math.round(gpsCoords.accuracy)}m`
+      : '—';
+    document.getElementById('result-time').textContent = now.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+    updateHomeUI();
+    showScreen('result');
+  }
+
+  // --- Supabase sync ---
+  async function syncScan(scan) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/scans`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          ticket_id: scan.ticket_id,
+          barcode: scan.barcode,
+          format: scan.format,
+          lat: scan.lat,
+          lng: scan.lng,
+          accuracy_metres: scan.accuracy ? Math.round(scan.accuracy) : null,
+          scanned_at: scan.timestamp,
+          device_id: scan.device_id
+        })
+      });
+      if (res.ok) {
+        const scans = getScans();
+        const idx = scans.findIndex(s => s.ticket_id === scan.ticket_id);
+        if (idx > -1) { scans[idx].synced = true; saveScans(scans); }
+      }
+    } catch (e) {
+      // Silent fail — data is safe locally
+    }
+  }
+
+  // --- Save email ---
+  async function saveEmail() {
+    const email = document.getElementById('email-input').value.trim();
+    if (!email || !email.includes('@')) { showToast('please enter a valid email', true); return; }
+    
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/email_captures`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ email, device_id: getDeviceId(), captured_at: new Date().toISOString() })
+      });
+    } catch {}
+
+    localStorage.setItem('bingo_email', email);
+    showToast('ticket saved!');
+    showScreen('home');
+  }
+
+  // --- Update home UI ---
+  function updateHomeUI() {
+    const scans = getScans();
+    const today = new Date().toDateString();
+    const todayScans = scans.filter(s => new Date(s.timestamp).toDateString() === today);
+    
+    document.getElementById('ticket-count').textContent = scans.length;
+    document.getElementById('today-count').textContent = todayScans.length;
+    document.getElementById('total-count').textContent = scans.length;
+
+    const list = document.getElementById('scan-list');
+    if (scans.length === 0) {
+      list.innerHTML = '<div class="empty">no scans yet — bin something to start!</div>';
+      return;
+    }
+    list.innerHTML = scans.slice(0, 10).map(s => {
+      const d = new Date(s.timestamp);
+      const timeStr = d.toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+      const locStr = s.lat ? `${s.lat.toFixed(3)}°N` : 'no GPS';
+      const label = s.barcode.length > 22 ? s.barcode.slice(0, 22) + '…' : s.barcode;
+      return `<div class="scan-item">
+        <div>
+          <div class="scan-item-name">${label}</div>
+          <div class="scan-item-meta">${timeStr} · ${locStr}</div>
+        </div>
+        <div class="ticket-badge">${s.ticket_id}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function showTerms() {
+    showToast('T&Cs: free to enter, no purchase necessary, 18+, UK residents only');
+  }
+
+  // Init
+  updateHomeUI();
+</script>
+</body>
+</html>
