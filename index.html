@@ -6,14 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="BIN-GO" />
   <link rel="manifest" href="/manifest.json" />
   <title>BIN-GO</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
-  #qr-reader-hidden { display: none; max-height: 300px; overflow: hidden; border-radius: 12px; margin: 0 24px; }
     :root {
       --bg: #0a0a0a; --surface: #141414; --surface2: #1e1e1e;
       --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
@@ -28,7 +25,6 @@
     .screen { display: none; flex-direction: column; flex: 1; }
     .screen.active { display: flex; }
 
-    /* HOME */
     .header { padding: 52px 24px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
     .logo { font-family: var(--mono); font-size: 26px; font-weight: 700; letter-spacing: -1px; }
     .logo em { color: var(--green); font-style: normal; }
@@ -36,6 +32,7 @@
     .ticket-count { text-align: right; }
     .ticket-num { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--green); line-height: 1; }
     .ticket-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
     .scan-wrap { padding: 0 24px; }
     .scan-btn { width: 100%; height: 180px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; cursor: pointer; position: relative; overflow: hidden; }
     .scan-corners span { position: absolute; width: 20px; height: 20px; border-color: var(--green); border-style: solid; opacity: 0.7; }
@@ -45,10 +42,12 @@
     .scan-corners span:nth-child(4) { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
     .scan-icon-ring { width: 60px; height: 60px; border: 1.5px solid var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--green-dim); }
     .scan-label { font-size: 13px; color: var(--text2); }
+
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 24px 0; }
     .stat { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
     .stat-val { font-family: var(--mono); font-size: 20px; font-weight: 700; }
     .stat-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
     .section-title { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono); padding: 20px 24px 10px; }
     .scan-list { padding: 0 24px 40px; display: flex; flex-direction: column; gap: 8px; }
     .scan-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -72,12 +71,10 @@
     .manual-input { flex: 1; padding: 12px 14px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 15px; color: var(--text); font-family: var(--sans); outline: none; }
     .go-btn { padding: 12px 18px; background: var(--green); border: none; border-radius: var(--radius); color: #000; font-weight: 700; font-size: 15px; cursor: pointer; }
 
-    /* BUTTONS */
     .btn { width: 100%; padding: 14px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: transparent; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; font-family: var(--sans); text-align: center; }
     .btn-primary { background: var(--green); border-color: var(--green); color: #000; font-weight: 600; }
     .btn-ghost { border-color: transparent; color: var(--text3); }
 
-    /* RESULT */
     .result-top { padding: 52px 24px 0; text-align: center; }
     .result-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--green-dim); border: 1.5px solid rgba(0,230,118,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
     .result-title { font-family: var(--mono); font-size: 24px; font-weight: 700; }
@@ -93,7 +90,6 @@
     .data-val.mono { font-family: var(--mono); font-size: 12px; color: var(--green); }
     .result-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; }
 
-    /* EMAIL */
     .email-top { padding: 52px 24px 0; flex: 1; }
     .email-title { font-family: var(--mono); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
     .email-sub { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 28px; }
@@ -101,12 +97,9 @@
     .field input { width: 100%; padding: 14px 16px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 16px; color: var(--text); font-family: var(--sans); outline: none; }
     .email-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; }
 
-    /* TOAST */
     .toast { position: fixed; bottom: 24px; left: 24px; right: 24px; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 14px 16px; font-size: 14px; color: var(--text); z-index: 100; transform: translateY(100px); opacity: 0; transition: all 0.3s ease; pointer-events: none; }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.error { border-color: #ff5252; color: #ff5252; }
-
-    /* FILE INPUT */
     #barcode-file { display: none; }
   </style>
 </head>
@@ -183,7 +176,7 @@
     </div>
     <div class="manual-wrap" id="manual-wrap">
       <div class="manual-row">
-        <input type="text" class="manual-input" id="manual-barcode" placeholder="type barcode number..." />
+        <input type="text" class="manual-input" id="manual-barcode" placeholder="type barcode number..." inputmode="numeric" />
         <button class="go-btn" id="go-btn">go</button>
       </div>
     </div>
@@ -238,45 +231,38 @@
   </div>
 
 </div>
-<div id="qr-reader-hidden"></div>
 <div class="toast" id="toast"></div>
 
 <script>
 (function() {
-  const SUPABASE_URL = 'https://moaszzhcqnhhlemdgurq.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_lms1xSA7h0rcI_K27ajYmQ_zCAHu-sw';
+  var SUPABASE_URL = 'https://moaszzhcqnhhlemdgurq.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_lms1xSA7h0rcI_K27ajYmQ_zCAHu-sw';
+  var gpsCoords = null;
 
-  let gpsCoords = null;
-
-  // Storage
   function getScans() { try { return JSON.parse(localStorage.getItem('bingo_scans') || '[]'); } catch { return []; } }
   function saveScans(s) { localStorage.setItem('bingo_scans', JSON.stringify(s)); }
   function getDeviceId() {
-    let id = localStorage.getItem('bingo_device_id');
-    if (!id) { id = 'dev_' + Math.random().toString(36).slice(2, 12); localStorage.setItem('bingo_device_id', id); }
+    var id = localStorage.getItem('bingo_device_id');
+    if (!id) { id = 'dev_' + Math.random().toString(36).slice(2,12); localStorage.setItem('bingo_device_id', id); }
     return id;
   }
   function generateTicketId() {
-    const seq = (getScans().length + 1).toString().padStart(4, '0');
-    return 'BG-' + new Date().getFullYear() + '-' + seq;
+    return 'BG-' + new Date().getFullYear() + '-' + (getScans().length + 1).toString().padStart(4,'0');
   }
 
-  // Screens
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById(id).classList.add('active');
   }
 
-  // Toast
   function toast(msg, isErr) {
     var t = document.getElementById('toast');
     t.textContent = msg;
     t.className = 'toast show' + (isErr ? ' error' : '');
-    clearTimeout(t._timer);
-    t._timer = setTimeout(function() { t.className = 'toast'; }, 3000);
+    clearTimeout(t._t);
+    t._t = setTimeout(function() { t.className = 'toast'; }, 3500);
   }
 
-  // GPS
   function startGPS() {
     gpsCoords = null;
     var el = document.getElementById('gps-status');
@@ -288,165 +274,142 @@
         el.textContent = gpsCoords.lat.toFixed(4) + ', ' + gpsCoords.lng.toFixed(4);
       },
       function(e) {
-        var msgs = { 1: 'location denied', 2: 'position unavailable', 3: 'GPS timeout' };
+        var msgs = { 1:'location denied', 2:'position unavailable', 3:'GPS timeout' };
         el.textContent = msgs[e.code] || 'GPS error';
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   }
 
-  // Handle scan result
   function handleScanResult(barcode, format) {
     var ticketId = generateTicketId();
     var now = new Date();
     var scan = {
-      ticket_id: ticketId,
-      barcode: barcode,
-      format: format || 'UNKNOWN',
+      ticket_id: ticketId, barcode: barcode, format: format || 'UNKNOWN',
       lat: gpsCoords ? gpsCoords.lat : null,
       lng: gpsCoords ? gpsCoords.lng : null,
       accuracy: gpsCoords ? gpsCoords.accuracy : null,
-      timestamp: now.toISOString(),
-      device_id: getDeviceId()
+      timestamp: now.toISOString(), device_id: getDeviceId()
     };
-    var scans = getScans();
-    scans.unshift(scan);
-    saveScans(scans);
+    var scans = getScans(); scans.unshift(scan); saveScans(scans);
     syncScan(scan);
 
     document.getElementById('result-product').textContent = barcode.length > 30 ? barcode.slice(0,30)+'...' : barcode;
     document.getElementById('result-ticket').textContent = ticketId;
     document.getElementById('result-barcode').textContent = barcode;
     document.getElementById('result-format').textContent = format || 'UNKNOWN';
-    document.getElementById('result-location').textContent = gpsCoords
-      ? gpsCoords.lat.toFixed(4) + 'N ' + Math.abs(gpsCoords.lng).toFixed(4) + 'W'
-      : 'unavailable';
-    document.getElementById('result-accuracy').textContent = gpsCoords ? '+/-' + Math.round(gpsCoords.accuracy) + 'm' : '--';
-    document.getElementById('result-time').textContent = now.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-
+    document.getElementById('result-location').textContent = gpsCoords ? gpsCoords.lat.toFixed(4)+'N '+Math.abs(gpsCoords.lng).toFixed(4)+'W' : 'unavailable';
+    document.getElementById('result-accuracy').textContent = gpsCoords ? '+/-'+Math.round(gpsCoords.accuracy)+'m' : '--';
+    document.getElementById('result-time').textContent = now.toLocaleString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
     updateHomeUI();
     showScreen('result');
   }
 
-  // Supabase sync
   function syncScan(scan) {
-    fetch(SUPABASE_URL + '/rest/v1/scans', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ ticket_id: scan.ticket_id, barcode: scan.barcode, format: scan.format, lat: scan.lat, lng: scan.lng, accuracy_metres: scan.accuracy ? Math.round(scan.accuracy) : null, scanned_at: scan.timestamp, device_id: scan.device_id })
-    }).catch(function() {});
+    fetch(SUPABASE_URL+'/rest/v1/scans', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({ticket_id:scan.ticket_id,barcode:scan.barcode,format:scan.format,lat:scan.lat,lng:scan.lng,accuracy_metres:scan.accuracy?Math.round(scan.accuracy):null,scanned_at:scan.timestamp,device_id:scan.device_id})
+    }).catch(function(){});
   }
 
-  // Update home UI
   function updateHomeUI() {
     var scans = getScans();
     var today = new Date().toDateString();
-    var todayCount = scans.filter(function(s) { return new Date(s.timestamp).toDateString() === today; }).length;
     document.getElementById('ticket-count').textContent = scans.length;
-    document.getElementById('today-count').textContent = todayCount;
+    document.getElementById('today-count').textContent = scans.filter(function(s){return new Date(s.timestamp).toDateString()===today;}).length;
     document.getElementById('total-count').textContent = scans.length;
     var list = document.getElementById('scan-list');
-    if (!scans.length) { list.innerHTML = '<div class="empty">no scans yet — bin something to start!</div>'; return; }
+    if (!scans.length) { list.innerHTML='<div class="empty">no scans yet — bin something to start!</div>'; return; }
     list.innerHTML = scans.slice(0,10).map(function(s) {
       var d = new Date(s.timestamp);
-      var t = d.toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
-      var loc = s.lat ? s.lat.toFixed(3) + 'N' : 'no GPS';
-      var label = s.barcode.length > 22 ? s.barcode.slice(0,22)+'...' : s.barcode;
-      return '<div class="scan-item"><div><div class="scan-item-name">' + label + '</div><div class="scan-item-meta">' + t + ' · ' + loc + '</div></div><div class="ticket-badge">' + s.ticket_id + '</div></div>';
+      var t = d.toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      var label = s.barcode.length>22?s.barcode.slice(0,22)+'...':s.barcode;
+      var loc = s.lat?s.lat.toFixed(3)+'N':'no GPS';
+      return '<div class="scan-item"><div><div class="scan-item-name">'+label+'</div><div class="scan-item-meta">'+t+' · '+loc+'</div></div><div class="ticket-badge">'+s.ticket_id+'</div></div>';
     }).join('');
   }
 
-  // Wire up all buttons after DOM ready
+  // Try to decode image using BarcodeDetector (Android Chrome) 
+  function tryDecode(file) {
+    if (!('BarcodeDetector' in window)) {
+      toast('camera scan not supported on this device — please enter manually', true);
+      return;
+    }
+    toast('reading barcode...');
+    var img = new Image();
+    var url = URL.createObjectURL(file);
+    img.onload = function() {
+      var detector = new BarcodeDetector({formats:['ean_13','ean_8','code_128','code_39','upc_a','upc_e','qr_code','data_matrix','itf']});
+      detector.detect(img).then(function(results) {
+        URL.revokeObjectURL(url);
+        if (results.length > 0) {
+          handleScanResult(results[0].rawValue, results[0].format);
+        } else {
+          toast('barcode not detected — try closer with good lighting, or enter manually', true);
+        }
+      }).catch(function() {
+        URL.revokeObjectURL(url);
+        toast('could not read barcode — try entering manually', true);
+      });
+    };
+    img.onerror = function() { URL.revokeObjectURL(url); toast('image error', true); };
+    img.src = url;
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
 
-    // Home scan button
     document.getElementById('scan-btn').addEventListener('click', function() {
       showScreen('scan-screen');
       startGPS();
     });
 
-    // Camera button - live scanner
-    var liveScanner = null;
     document.getElementById('camera-btn').addEventListener('click', function() {
-      var readerEl = document.getElementById('qr-reader-hidden');
-      readerEl.style.display = 'block';
-      readerEl.style.width = '100%';
-      document.getElementById('camera-btn').textContent = 'stop camera';
-      document.getElementById('camera-btn').removeEventListener('click', arguments.callee);
-
-      liveScanner = new Html5Qrcode('qr-reader-hidden');
-      liveScanner.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        function(decoded) {
-          liveScanner.stop().catch(function(){});
-          readerEl.style.display = 'none';
-          handleScanResult(decoded, 'SCAN');
-        },
-        function(err) { /* scanning */ }
-      ).catch(function(err) {
-        toast('camera error: ' + err, true);
-      });
+      document.getElementById('barcode-file').click();
     });
 
-    // File input change - keep as fallback but not used
     document.getElementById('barcode-file').addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      tryDecode(file);
       e.target.value = '';
     });
 
-    // Manual entry toggle
     document.getElementById('manual-btn').addEventListener('click', function() {
       var w = document.getElementById('manual-wrap');
       w.style.display = w.style.display === 'block' ? 'none' : 'block';
       if (w.style.display === 'block') document.getElementById('manual-barcode').focus();
     });
 
-    // Go button
     document.getElementById('go-btn').addEventListener('click', function() {
       var val = document.getElementById('manual-barcode').value.trim();
       if (!val) { toast('please enter a barcode number', true); return; }
       handleScanResult(val, 'MANUAL');
     });
 
-    // Cancel
-    document.getElementById('cancel-btn').addEventListener('click', function() {
-      if (liveScanner) { liveScanner.stop().catch(function(){}); liveScanner = null; }
-      var readerEl = document.getElementById('qr-reader-hidden');
-      readerEl.style.display = 'none';
-      showScreen('home');
-    });
-
-    // Save ticket
+    document.getElementById('cancel-btn').addEventListener('click', function() { showScreen('home'); });
     document.getElementById('save-ticket-btn').addEventListener('click', function() { showScreen('email'); });
-
-    // Skip
     document.getElementById('skip-btn').addEventListener('click', function() { showScreen('home'); });
 
-    // Send email
     document.getElementById('send-email-btn').addEventListener('click', function() {
       var email = document.getElementById('email-input').value.trim();
       if (!email || email.indexOf('@') < 0) { toast('please enter a valid email', true); return; }
-      // Save to email_captures table
-      fetch(SUPABASE_URL + '/rest/v1/email_captures', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ email: email, device_id: getDeviceId(), captured_at: new Date().toISOString() })
-      }).catch(function() {});
-      // Also update all scans for this device with the email
-      fetch(SUPABASE_URL + '/rest/v1/scans?device_id=eq.' + getDeviceId(), {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ email: email })
-      }).catch(function() {});
+      fetch(SUPABASE_URL+'/rest/v1/email_captures', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=minimal'},
+        body:JSON.stringify({email:email,device_id:getDeviceId(),captured_at:new Date().toISOString()})
+      }).catch(function(){});
+      fetch(SUPABASE_URL+'/rest/v1/scans?device_id=eq.'+getDeviceId(), {
+        method:'PATCH',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=minimal'},
+        body:JSON.stringify({email:email})
+      }).catch(function(){});
       localStorage.setItem('bingo_email', email);
       toast('ticket saved!');
       showScreen('home');
     });
 
-    // Skip email
     document.getElementById('skip-email-btn').addEventListener('click', function() { showScreen('home'); });
-
-    // Terms
     document.getElementById('terms-link').addEventListener('click', function(e) {
       e.preventDefault();
       toast('T&Cs: free to enter, no purchase necessary, 18+, UK residents only');
