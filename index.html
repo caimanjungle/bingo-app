@@ -247,7 +247,8 @@
     return id;
   }
   function generateTicketId() {
-    return 'BG-' + new Date().getFullYear() + '-' + (getScans().length + 1).toString().padStart(4,'0');
+    var rand = Math.random().toString(36).slice(2,6).toUpperCase();
+    return 'BG-' + new Date().getFullYear() + '-' + rand + '-' + (getScans().length + 1).toString().padStart(3,'0');
   }
 
   function showScreen(id) {
