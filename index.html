@@ -425,10 +425,17 @@
     document.getElementById('send-email-btn').addEventListener('click', function() {
       var email = document.getElementById('email-input').value.trim();
       if (!email || email.indexOf('@') < 0) { toast('please enter a valid email', true); return; }
+      // Save to email_captures table
       fetch(SUPABASE_URL + '/rest/v1/email_captures', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' },
         body: JSON.stringify({ email: email, device_id: getDeviceId(), captured_at: new Date().toISOString() })
+      }).catch(function() {});
+      // Also update all scans for this device with the email
+      fetch(SUPABASE_URL + '/rest/v1/scans?device_id=eq.' + getDeviceId(), {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ email: email })
       }).catch(function() {});
       localStorage.setItem('bingo_email', email);
       toast('ticket saved!');
