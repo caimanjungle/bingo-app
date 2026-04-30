@@ -260,7 +260,7 @@
     t.textContent = msg;
     t.className = 'toast show' + (isErr ? ' error' : '');
     clearTimeout(t._t);
-    t._t = setTimeout(function() { t.className = 'toast'; }, 3500);
+    t._t = setTimeout(function() { t.className = 'toast'; }, isErr ? 10000 : 3500);
   }
 
   function startGPS() {
