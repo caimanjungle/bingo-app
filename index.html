@@ -10,47 +10,32 @@
   <meta name="apple-mobile-web-app-title" content="BIN-GO" />
   <link rel="manifest" href="/manifest.json" />
   <title>BIN-GO</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <!-- Quagga loaded dynamically when needed -->
   <style>
     :root {
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --surface2: #1e1e1e;
-      --border: rgba(255,255,255,0.08);
-      --border2: rgba(255,255,255,0.15);
-      --green: #00e676;
-      --green-dim: rgba(0,230,118,0.12);
-      --text: #f0f0f0;
-      --text2: #888;
-      --text3: #555;
-      --mono: 'Space Mono', monospace;
-      --sans: 'DM Sans', sans-serif;
-      --radius: 12px;
-      --radius-lg: 20px;
+      --bg: #0a0a0a; --surface: #141414; --surface2: #1e1e1e;
+      --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+      --green: #00e676; --green-dim: rgba(0,230,118,0.12);
+      --text: #f0f0f0; --text2: #888; --text3: #555;
+      --mono: 'Space Mono', monospace; --sans: 'DM Sans', sans-serif;
+      --radius: 12px; --radius-lg: 20px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); overflow: hidden; }
-    #app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-    .screen { display: none; flex: 1; overflow-y: auto; overflow-x: hidden; animation: fadeIn 0.2s ease; }
-    .screen.active { display: flex; flex-direction: column; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); }
+    #app { min-height: 100vh; display: flex; flex-direction: column; }
+    .screen { display: none; flex-direction: column; flex: 1; }
+    .screen.active { display: flex; }
 
-    /* Header */
-    .header { padding: 52px 24px 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
+    /* HOME */
+    .header { padding: 52px 24px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
     .logo { font-family: var(--mono); font-size: 26px; font-weight: 700; letter-spacing: -1px; }
     .logo em { color: var(--green); font-style: normal; }
     .tagline { font-size: 11px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; font-family: var(--mono); }
     .ticket-count { text-align: right; }
     .ticket-num { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--green); line-height: 1; }
     .ticket-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
-
-    /* Scan button */
-    .scan-wrap { padding: 0 24px; flex-shrink: 0; }
+    .scan-wrap { padding: 0 24px; }
     .scan-btn { width: 100%; height: 180px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; cursor: pointer; position: relative; overflow: hidden; }
-    .scan-btn::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 120%, rgba(0,230,118,0.06) 0%, transparent 70%); pointer-events: none; }
     .scan-corners span { position: absolute; width: 20px; height: 20px; border-color: var(--green); border-style: solid; opacity: 0.7; }
     .scan-corners span:nth-child(1) { top: 14px; left: 14px; border-width: 2px 0 0 2px; }
     .scan-corners span:nth-child(2) { top: 14px; right: 14px; border-width: 2px 2px 0 0; }
@@ -58,74 +43,69 @@
     .scan-corners span:nth-child(4) { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
     .scan-icon-ring { width: 60px; height: 60px; border: 1.5px solid var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--green-dim); }
     .scan-label { font-size: 13px; color: var(--text2); }
-
-    /* Stats */
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 24px 0; flex-shrink: 0; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 24px 0; }
     .stat { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
     .stat-val { font-family: var(--mono); font-size: 20px; font-weight: 700; }
     .stat-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
-
-    /* History */
-    .section-title { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono); padding: 20px 24px 10px; flex-shrink: 0; }
-    .scan-list { padding: 0 24px 100px; display: flex; flex-direction: column; gap: 8px; }
+    .section-title { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono); padding: 20px 24px 10px; }
+    .scan-list { padding: 0 24px 40px; display: flex; flex-direction: column; gap: 8px; }
     .scan-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
     .scan-item-name { font-size: 14px; font-weight: 500; }
     .scan-item-meta { font-size: 11px; color: var(--text3); margin-top: 3px; }
     .ticket-badge { font-family: var(--mono); font-size: 11px; color: var(--green); background: var(--green-dim); border: 0.5px solid rgba(0,230,118,0.2); padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
-    .terms { font-size: 11px; color: var(--text3); text-align: center; padding: 16px 24px 32px; line-height: 1.6; flex-shrink: 0; }
-    .terms a { color: var(--green); text-decoration: none; }
     .empty { text-align: center; padding: 32px 24px; color: var(--text3); font-size: 13px; }
+    .terms { font-size: 11px; color: var(--text3); text-align: center; padding: 16px 24px 32px; line-height: 1.6; }
+    .terms a { color: var(--green); text-decoration: none; }
 
-    /* Scanning screen */
-    #scanning { background: #000; }
-    .scan-prompt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 40px 24px; }
-    .scan-prompt-icon { width: 120px; height: 120px; border: 2px solid var(--green); border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(0,230,118,0.08); position: relative; }
-    .scan-prompt-icon span { position: absolute; width: 24px; height: 24px; border-color: var(--green); border-style: solid; }
-    .scan-prompt-icon span:nth-child(1) { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
-    .scan-prompt-icon span:nth-child(2) { top: -2px; right: -2px; border-width: 3px 3px 0 0; }
-    .scan-prompt-icon span:nth-child(3) { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; }
-    .scan-prompt-icon span:nth-child(4) { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
-    .scan-prompt-text { text-align: center; }
-    .scan-prompt-text h2 { font-family: var(--mono); font-size: 18px; color: var(--text); margin-bottom: 8px; }
-    .scan-prompt-text p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    /* SCAN SCREEN */
+    #scan-screen { background: #0a0a0a; }
+    .scan-screen-inner { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 40px 24px; }
+    .big-icon { width: 100px; height: 100px; border: 2px solid var(--green); border-radius: 16px; display: flex; align-items: center; justify-content: center; background: var(--green-dim); }
     .gps-pill { background: rgba(0,230,118,0.15); border: 0.5px solid rgba(0,230,118,0.3); border-radius: 20px; padding: 6px 14px; font-size: 12px; color: var(--green); font-family: var(--mono); display: flex; align-items: center; gap: 6px; }
     .gps-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .camera-actions { padding: 24px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+    .scan-actions { padding: 0 24px 48px; display: flex; flex-direction: column; gap: 10px; }
+    .manual-wrap { padding: 0 24px 12px; display: none; }
+    .manual-row { display: flex; gap: 8px; }
+    .manual-input { flex: 1; padding: 12px 14px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 15px; color: var(--text); font-family: var(--sans); outline: none; }
+    .go-btn { padding: 12px 18px; background: var(--green); border: none; border-radius: var(--radius); color: #000; font-weight: 700; font-size: 15px; cursor: pointer; }
 
-    /* Buttons */
-    .btn { width: 100%; padding: 14px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: transparent; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; font-family: var(--sans); }
+    /* BUTTONS */
+    .btn { width: 100%; padding: 14px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: transparent; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; font-family: var(--sans); text-align: center; }
     .btn-primary { background: var(--green); border-color: var(--green); color: #000; font-weight: 600; }
     .btn-ghost { border-color: transparent; color: var(--text3); }
 
-    /* Result */
-    .result-header { padding: 52px 24px 0; text-align: center; flex-shrink: 0; }
+    /* RESULT */
+    .result-top { padding: 52px 24px 0; text-align: center; }
     .result-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--green-dim); border: 1.5px solid rgba(0,230,118,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
     .result-title { font-family: var(--mono); font-size: 24px; font-weight: 700; }
     .result-sub { font-size: 14px; color: var(--text2); margin-top: 6px; }
     .ticket-card { margin: 20px 24px 0; background: var(--surface); border: 1px dashed rgba(0,230,118,0.3); border-radius: var(--radius-lg); padding: 20px; text-align: center; }
-    .ticket-num-large { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--green); letter-spacing: 3px; }
-    .ticket-sub { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; font-family: var(--mono); }
-    .data-card { margin: 12px 24px 0; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; flex-shrink: 0; }
+    .ticket-big { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--green); letter-spacing: 3px; }
+    .ticket-sub2 { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; font-family: var(--mono); }
+    .data-card { margin: 12px 24px 0; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
     .data-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
     .data-row:last-child { border-bottom: none; }
     .data-key { font-size: 12px; color: var(--text3); font-family: var(--mono); }
     .data-val { font-size: 13px; color: var(--text); text-align: right; max-width: 60%; word-break: break-all; }
     .data-val.mono { font-family: var(--mono); font-size: 12px; color: var(--green); }
-    .result-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+    .result-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; }
 
-    /* Email */
-    .email-wrap { padding: 52px 24px 0; flex: 1; }
+    /* EMAIL */
+    .email-top { padding: 52px 24px 0; flex: 1; }
     .email-title { font-family: var(--mono); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
     .email-sub { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 28px; }
     .field label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--mono); display: block; margin-bottom: 8px; }
     .field input { width: 100%; padding: 14px 16px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 16px; color: var(--text); font-family: var(--sans); outline: none; }
-    .email-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+    .email-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; }
 
-    /* Toast */
-    .toast { position: fixed; bottom: 24px; left: 24px; right: 24px; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 14px 16px; font-size: 14px; color: var(--text); z-index: 100; transform: translateY(80px); opacity: 0; transition: all 0.3s ease; pointer-events: none; }
+    /* TOAST */
+    .toast { position: fixed; bottom: 24px; left: 24px; right: 24px; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 14px 16px; font-size: 14px; color: var(--text); z-index: 100; transform: translateY(100px); opacity: 0; transition: all 0.3s ease; pointer-events: none; }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.error { border-color: #ff5252; color: #ff5252; }
+
+    /* FILE INPUT */
+    #barcode-file { display: none; }
   </style>
 </head>
 <body>
@@ -143,9 +123,8 @@
         <div class="ticket-lbl">tickets</div>
       </div>
     </div>
-
     <div class="scan-wrap">
-      <div class="scan-btn" onclick="startScan()">
+      <div class="scan-btn" id="scan-btn">
         <div class="scan-corners"><span></span><span></span><span></span><span></span></div>
         <div class="scan-icon-ring">
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -164,24 +143,20 @@
         <div class="scan-label">tap to scan barcode</div>
       </div>
     </div>
-
     <div class="stats">
       <div class="stat"><div class="stat-val" id="today-count">0</div><div class="stat-lbl">today</div></div>
       <div class="stat"><div class="stat-val" id="total-count">0</div><div class="stat-lbl">total scans</div></div>
     </div>
-
     <div class="section-title">recent scans</div>
     <div class="scan-list" id="scan-list"><div class="empty">no scans yet — bin something to start!</div></div>
-    <div class="terms">By scanning you agree to the <a href="#" onclick="showTerms();return false;">T&amp;Cs</a> · Free to enter · No purchase necessary</div>
+    <div class="terms">By scanning you agree to the <a href="#" id="terms-link">T&amp;Cs</a> · Free to enter · No purchase necessary</div>
   </div>
 
-  <!-- SCANNING -->
-  <div id="scanning" class="screen">
-    <!-- Hidden file input — triggers iPhone native camera -->
-    <input type="file" id="barcode-file" accept="image/*" capture="environment" style="display:none;" onchange="handleImageCapture(event)" />
-    <div class="scan-prompt">
-      <div class="scan-prompt-icon">
-        <span></span><span></span><span></span><span></span>
+  <!-- SCAN SCREEN -->
+  <div id="scan-screen" class="screen">
+    <input type="file" id="barcode-file" accept="image/*" capture="environment" />
+    <div class="scan-screen-inner">
+      <div class="big-icon">
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
           <rect x="6" y="6" width="13" height="13" rx="1.5" stroke="#00e676" stroke-width="2"/>
           <rect x="29" y="6" width="13" height="13" rx="1.5" stroke="#00e676" stroke-width="2"/>
@@ -195,40 +170,40 @@
           <rect x="35" y="35" width="4" height="4" fill="#00e676"/>
         </svg>
       </div>
-      <div class="scan-prompt-text">
-        <h2>scan barcode</h2>
-        <p>point your camera at the barcode<br/>on the packaging you're binning</p>
+      <div style="text-align:center;">
+        <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">scan barcode</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;">point your camera at the barcode<br/>on the packaging you're binning</div>
       </div>
       <div class="gps-pill">
         <div class="gps-dot"></div>
         <span id="gps-status">locating...</span>
       </div>
     </div>
-    <div class="camera-actions">
-      <button class="btn btn-primary" onclick="openCamera()">open camera</button>
-      <button class="btn" onclick="showManualEntry()">enter barcode manually</button>
-      <button class="btn btn-ghost" onclick="showScreen('home')">cancel</button>
-    </div>
-    <div id="manual-entry" style="display:none; padding: 0 24px 16px;">
-      <div style="display:flex; gap:8px;">
-        <input type="text" id="manual-barcode" placeholder="e.g. 5000112637922" style="flex:1; padding:12px 14px; background:var(--surface); border:0.5px solid var(--border2); border-radius:var(--radius); font-size:15px; color:var(--text); font-family:var(--sans); outline:none;" />
-        <button onclick="submitManual()" style="padding:12px 16px; background:var(--green); border:none; border-radius:var(--radius); color:#000; font-weight:600; font-size:14px; cursor:pointer;">go</button>
+    <div class="manual-wrap" id="manual-wrap">
+      <div class="manual-row">
+        <input type="text" class="manual-input" id="manual-barcode" placeholder="type barcode number..." />
+        <button class="go-btn" id="go-btn">go</button>
       </div>
+    </div>
+    <div class="scan-actions">
+      <button class="btn btn-primary" id="camera-btn">open camera</button>
+      <button class="btn" id="manual-btn">enter barcode manually</button>
+      <button class="btn btn-ghost" id="cancel-btn">cancel</button>
     </div>
   </div>
 
   <!-- RESULT -->
   <div id="result" class="screen">
-    <div class="result-header">
+    <div class="result-top">
       <div class="result-icon">
         <svg viewBox="0 0 28 28" fill="none"><path d="M5 14l7 7L23 7" stroke="#00e676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="result-title">binned!</div>
-      <div class="result-sub" id="result-product">product scanned</div>
+      <div class="result-sub" id="result-product">—</div>
     </div>
     <div class="ticket-card">
-      <div class="ticket-num-large" id="result-ticket">—</div>
-      <div class="ticket-sub">your prize draw ticket</div>
+      <div class="ticket-big" id="result-ticket">—</div>
+      <div class="ticket-sub2">your prize draw ticket</div>
     </div>
     <div class="data-card">
       <div class="data-row"><span class="data-key">barcode</span><span class="data-val mono" id="result-barcode">—</span></div>
@@ -238,14 +213,14 @@
       <div class="data-row"><span class="data-key">time</span><span class="data-val" id="result-time">—</span></div>
     </div>
     <div class="result-actions">
-      <button class="btn btn-primary" onclick="showScreen('email')">save my ticket</button>
-      <button class="btn" onclick="showScreen('home')">skip for now</button>
+      <button class="btn btn-primary" id="save-ticket-btn">save my ticket</button>
+      <button class="btn" id="skip-btn">skip for now</button>
     </div>
   </div>
 
   <!-- EMAIL -->
   <div id="email" class="screen">
-    <div class="email-wrap">
+    <div class="email-top">
       <div class="email-title">save your ticket</div>
       <div class="email-sub">enter your email to back up your tickets. you only need to register if you win.</div>
       <div class="field">
@@ -254,8 +229,8 @@
       </div>
     </div>
     <div class="email-actions">
-      <button class="btn btn-primary" onclick="saveEmail()">send me a backup link</button>
-      <button class="btn btn-ghost" onclick="showScreen('home')">not now</button>
+      <button class="btn btn-primary" id="send-email-btn">send me a backup link</button>
+      <button class="btn btn-ghost" id="skip-email-btn">not now</button>
       <p class="terms">we only contact you if you win · <a href="#">privacy policy</a></p>
     </div>
   </div>
@@ -264,12 +239,13 @@
 <div class="toast" id="toast"></div>
 
 <script>
+(function() {
   const SUPABASE_URL = 'https://moaszzhcqnhhlemdgurq.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_lms1xSA7h0rcI_K27ajYmQ_zCAHu-sw';
 
   let gpsCoords = null;
-  let currentScan = null;
 
+  // Storage
   function getScans() { try { return JSON.parse(localStorage.getItem('bingo_scans') || '[]'); } catch { return []; } }
   function saveScans(s) { localStorage.setItem('bingo_scans', JSON.stringify(s)); }
   function getDeviceId() {
@@ -279,199 +255,198 @@
   }
   function generateTicketId() {
     const seq = (getScans().length + 1).toString().padStart(4, '0');
-    return `BG-${new Date().getFullYear()}-${seq}`;
+    return 'BG-' + new Date().getFullYear() + '-' + seq;
   }
 
+  // Screens
   function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById(id).classList.add('active');
   }
 
-  function showToast(msg, isError) {
-    const t = document.getElementById('toast');
+  // Toast
+  function toast(msg, isErr) {
+    var t = document.getElementById('toast');
     t.textContent = msg;
-    t.className = 'toast show' + (isError ? ' error' : '');
-    setTimeout(() => t.className = 'toast', 3000);
+    t.className = 'toast show' + (isErr ? ' error' : '');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function() { t.className = 'toast'; }, 3000);
   }
 
-  function getGPS() {
-    return new Promise(resolve => {
-      if (!navigator.geolocation) {
-        document.getElementById('gps-status').textContent = 'GPS not supported';
-        resolve(null); return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        p => resolve({ lat: p.coords.latitude, lng: p.coords.longitude, accuracy: p.coords.accuracy }),
-        err => {
-          const msgs = { 1: 'permission denied', 2: 'position unavailable', 3: 'GPS timeout' };
-          document.getElementById('gps-status').textContent = msgs[err.code] || 'GPS error';
-          resolve(null);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-      );
-    });
+  // GPS
+  function startGPS() {
+    gpsCoords = null;
+    var el = document.getElementById('gps-status');
+    if (!navigator.geolocation) { el.textContent = 'GPS not supported'; return; }
+    el.textContent = 'locating...';
+    navigator.geolocation.getCurrentPosition(
+      function(p) {
+        gpsCoords = { lat: p.coords.latitude, lng: p.coords.longitude, accuracy: p.coords.accuracy };
+        el.textContent = gpsCoords.lat.toFixed(4) + ', ' + gpsCoords.lng.toFixed(4);
+      },
+      function(e) {
+        var msgs = { 1: 'location denied', 2: 'position unavailable', 3: 'GPS timeout' };
+        el.textContent = msgs[e.code] || 'GPS error';
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
   }
 
-  function startScan() {
-    showScreen('scanning');
-    document.getElementById('gps-status').textContent = 'locating...';
-    getGPS().then(coords => {
-      gpsCoords = coords;
-      document.getElementById('gps-status').textContent = coords
-        ? `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`
-        : 'GPS unavailable';
-    });
-  }
-
-  function openCamera() {
-    document.getElementById('barcode-file').click();
-  }
-
-  function handleImageCapture(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    showToast('reading barcode...');
-    
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      const MAX = 1200;
-      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      URL.revokeObjectURL(url);
-      event.target.value = '';
-      
-      // Try BarcodeDetector API first (native, very accurate)
-      if ('BarcodeDetector' in window) {
-        const detector = new BarcodeDetector({ formats: ['ean_13','ean_8','code_128','code_39','upc_a','upc_e','qr_code','data_matrix','itf'] });
-        detector.detect(canvas).then(barcodes => {
-          if (barcodes.length > 0) {
-            handleScanResult(barcodes[0].rawValue, barcodes[0].format);
-          } else {
-            showToast('barcode not detected — try closer with good lighting', true);
-          }
-        }).catch(() => {
-          showToast('barcode not detected — try again', true);
-        });
-      } else {
-        // Fallback: try to use canvas data with simple check
-        showToast('barcode not detected — try entering manually', true);
-      }
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); showToast('image error', true); };
-    img.src = url;
-  }
-
-  async function handleScanResult(barcodeValue, format) {
-    try {
-    const ticketId = generateTicketId();
-    const now = new Date();
-    const scan = {
+  // Handle scan result
+  function handleScanResult(barcode, format) {
+    var ticketId = generateTicketId();
+    var now = new Date();
+    var scan = {
       ticket_id: ticketId,
-      barcode: barcodeValue,
-      format: format || 'GS1',
-      lat: gpsCoords?.lat || null,
-      lng: gpsCoords?.lng || null,
-      accuracy: gpsCoords?.accuracy || null,
+      barcode: barcode,
+      format: format || 'UNKNOWN',
+      lat: gpsCoords ? gpsCoords.lat : null,
+      lng: gpsCoords ? gpsCoords.lng : null,
+      accuracy: gpsCoords ? gpsCoords.accuracy : null,
       timestamp: now.toISOString(),
-      device_id: getDeviceId(),
-      synced: false
+      device_id: getDeviceId()
     };
-
-    const scans = getScans();
+    var scans = getScans();
     scans.unshift(scan);
     saveScans(scans);
-    currentScan = scan;
     syncScan(scan);
 
-    document.getElementById('result-product').textContent = barcodeValue.length > 30 ? barcodeValue.slice(0,30)+'...' : barcodeValue;
+    document.getElementById('result-product').textContent = barcode.length > 30 ? barcode.slice(0,30)+'...' : barcode;
     document.getElementById('result-ticket').textContent = ticketId;
-    document.getElementById('result-barcode').textContent = barcodeValue;
-    document.getElementById('result-format').textContent = format || 'GS1';
+    document.getElementById('result-barcode').textContent = barcode;
+    document.getElementById('result-format').textContent = format || 'UNKNOWN';
     document.getElementById('result-location').textContent = gpsCoords
-      ? `${gpsCoords.lat.toFixed(4)}°N ${Math.abs(gpsCoords.lng).toFixed(4)}°W`
+      ? gpsCoords.lat.toFixed(4) + 'N ' + Math.abs(gpsCoords.lng).toFixed(4) + 'W'
       : 'unavailable';
-    document.getElementById('result-accuracy').textContent = gpsCoords ? `±${Math.round(gpsCoords.accuracy)}m` : '—';
+    document.getElementById('result-accuracy').textContent = gpsCoords ? '+/-' + Math.round(gpsCoords.accuracy) + 'm' : '--';
     document.getElementById('result-time').textContent = now.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
-      updateHomeUI();
-      showScreen('result');
-    } catch(e) {
-      showToast('scan error: ' + e.message, true);
-    }
+    updateHomeUI();
+    showScreen('result');
   }
 
-  async function syncScan(scan) {
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/scans`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ ticket_id: scan.ticket_id, barcode: scan.barcode, format: scan.format, lat: scan.lat, lng: scan.lng, accuracy_metres: scan.accuracy ? Math.round(scan.accuracy) : null, scanned_at: scan.timestamp, device_id: scan.device_id })
-      });
-      if (res.ok) {
-        const scans = getScans();
-        const idx = scans.findIndex(s => s.ticket_id === scan.ticket_id);
-        if (idx > -1) { scans[idx].synced = true; saveScans(scans); }
-      }
-    } catch {}
+  // Supabase sync
+  function syncScan(scan) {
+    fetch(SUPABASE_URL + '/rest/v1/scans', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ ticket_id: scan.ticket_id, barcode: scan.barcode, format: scan.format, lat: scan.lat, lng: scan.lng, accuracy_metres: scan.accuracy ? Math.round(scan.accuracy) : null, scanned_at: scan.timestamp, device_id: scan.device_id })
+    }).catch(function() {});
   }
 
-  async function saveEmail() {
-    const email = document.getElementById('email-input').value.trim();
-    if (!email || !email.includes('@')) { showToast('please enter a valid email', true); return; }
-    try {
-      await fetch(`${SUPABASE_URL}/rest/v1/email_captures`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ email, device_id: getDeviceId(), captured_at: new Date().toISOString() })
-      });
-    } catch {}
-    localStorage.setItem('bingo_email', email);
-    showToast('ticket saved!');
-    showScreen('home');
-  }
-
+  // Update home UI
   function updateHomeUI() {
-    const scans = getScans();
-    const today = new Date().toDateString();
-    const todayScans = scans.filter(s => new Date(s.timestamp).toDateString() === today);
+    var scans = getScans();
+    var today = new Date().toDateString();
+    var todayCount = scans.filter(function(s) { return new Date(s.timestamp).toDateString() === today; }).length;
     document.getElementById('ticket-count').textContent = scans.length;
-    document.getElementById('today-count').textContent = todayScans.length;
+    document.getElementById('today-count').textContent = todayCount;
     document.getElementById('total-count').textContent = scans.length;
-    const list = document.getElementById('scan-list');
+    var list = document.getElementById('scan-list');
     if (!scans.length) { list.innerHTML = '<div class="empty">no scans yet — bin something to start!</div>'; return; }
-    list.innerHTML = scans.slice(0,10).map(s => {
-      const d = new Date(s.timestamp);
-      const t = d.toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
-      const loc = s.lat ? `${s.lat.toFixed(3)}°N` : 'no GPS';
-      const label = s.barcode.length > 22 ? s.barcode.slice(0,22)+'…' : s.barcode;
-      return `<div class="scan-item"><div><div class="scan-item-name">${label}</div><div class="scan-item-meta">${t} · ${loc}</div></div><div class="ticket-badge">${s.ticket_id}</div></div>`;
+    list.innerHTML = scans.slice(0,10).map(function(s) {
+      var d = new Date(s.timestamp);
+      var t = d.toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+      var loc = s.lat ? s.lat.toFixed(3) + 'N' : 'no GPS';
+      var label = s.barcode.length > 22 ? s.barcode.slice(0,22)+'...' : s.barcode;
+      return '<div class="scan-item"><div><div class="scan-item-name">' + label + '</div><div class="scan-item-meta">' + t + ' · ' + loc + '</div></div><div class="ticket-badge">' + s.ticket_id + '</div></div>';
     }).join('');
   }
 
-  function showManualEntry() {
-    const el = document.getElementById('manual-entry');
-    el.style.display = el.style.display === 'none' ? 'block' : 'none';
-    if (el.style.display === 'block') document.getElementById('manual-barcode').focus();
-  }
+  // Wire up all buttons after DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
 
-  function submitManual() {
-    const val = document.getElementById('manual-barcode').value.trim();
-    if (!val) { showToast('please enter a barcode', true); return; }
-    try {
+    // Home scan button
+    document.getElementById('scan-btn').addEventListener('click', function() {
+      showScreen('scan-screen');
+      startGPS();
+    });
+
+    // Camera button
+    document.getElementById('camera-btn').addEventListener('click', function() {
+      document.getElementById('barcode-file').click();
+    });
+
+    // File input change
+    document.getElementById('barcode-file').addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      toast('reading barcode...');
+      if ('BarcodeDetector' in window) {
+        var img = new Image();
+        var url = URL.createObjectURL(file);
+        img.onload = function() {
+          var detector = new BarcodeDetector({ formats: ['ean_13','ean_8','code_128','code_39','upc_a','upc_e','qr_code','data_matrix'] });
+          detector.detect(img).then(function(results) {
+            URL.revokeObjectURL(url);
+            e.target.value = '';
+            if (results.length > 0) {
+              handleScanResult(results[0].rawValue, results[0].format);
+            } else {
+              toast('barcode not detected — try again or enter manually', true);
+            }
+          }).catch(function() {
+            URL.revokeObjectURL(url);
+            e.target.value = '';
+            toast('could not read barcode — try entering manually', true);
+          });
+        };
+        img.src = url;
+      } else {
+        toast('camera scan not supported — please enter manually', true);
+        e.target.value = '';
+      }
+    });
+
+    // Manual entry toggle
+    document.getElementById('manual-btn').addEventListener('click', function() {
+      var w = document.getElementById('manual-wrap');
+      w.style.display = w.style.display === 'block' ? 'none' : 'block';
+      if (w.style.display === 'block') document.getElementById('manual-barcode').focus();
+    });
+
+    // Go button
+    document.getElementById('go-btn').addEventListener('click', function() {
+      var val = document.getElementById('manual-barcode').value.trim();
+      if (!val) { toast('please enter a barcode number', true); return; }
       handleScanResult(val, 'MANUAL');
-    } catch(e) {
-      showToast('error: ' + e.message, true);
-    }
-  }
+    });
 
-  function showTerms() { showToast('T&Cs: free to enter, no purchase necessary, 18+, UK residents only'); }
+    // Cancel
+    document.getElementById('cancel-btn').addEventListener('click', function() { showScreen('home'); });
 
-  updateHomeUI();
+    // Save ticket
+    document.getElementById('save-ticket-btn').addEventListener('click', function() { showScreen('email'); });
+
+    // Skip
+    document.getElementById('skip-btn').addEventListener('click', function() { showScreen('home'); });
+
+    // Send email
+    document.getElementById('send-email-btn').addEventListener('click', function() {
+      var email = document.getElementById('email-input').value.trim();
+      if (!email || email.indexOf('@') < 0) { toast('please enter a valid email', true); return; }
+      fetch(SUPABASE_URL + '/rest/v1/email_captures', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ email: email, device_id: getDeviceId(), captured_at: new Date().toISOString() })
+      }).catch(function() {});
+      localStorage.setItem('bingo_email', email);
+      toast('ticket saved!');
+      showScreen('home');
+    });
+
+    // Skip email
+    document.getElementById('skip-email-btn').addEventListener('click', function() { showScreen('home'); });
+
+    // Terms
+    document.getElementById('terms-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      toast('T&Cs: free to enter, no purchase necessary, 18+, UK residents only');
+    });
+
+    updateHomeUI();
+  });
+})();
 </script>
 </body>
 </html>
