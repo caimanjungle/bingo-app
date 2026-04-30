@@ -23,7 +23,6 @@
       --border2: rgba(255,255,255,0.15);
       --green: #00e676;
       --green-dim: rgba(0,230,118,0.12);
-      --green-mid: rgba(0,230,118,0.25);
       --text: #f0f0f0;
       --text2: #888;
       --text3: #555;
@@ -34,18 +33,14 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); overflow: hidden; }
-    
-    /* App shell */
     #app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-    
-    /* Screens */
-    .screen { display: none; flex: 1; overflow-y: auto; overflow-x: hidden; padding: 0; animation: fadeIn 0.2s ease; }
+    .screen { display: none; flex: 1; overflow-y: auto; overflow-x: hidden; animation: fadeIn 0.2s ease; }
     .screen.active { display: flex; flex-direction: column; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    
+
     /* Header */
     .header { padding: 52px 24px 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
-    .logo { font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -1px; }
+    .logo { font-family: var(--mono); font-size: 26px; font-weight: 700; letter-spacing: -1px; }
     .logo em { color: var(--green); font-style: normal; }
     .tagline { font-size: 11px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; font-family: var(--mono); }
     .ticket-count { text-align: right; }
@@ -54,97 +49,81 @@
 
     /* Scan button */
     .scan-wrap { padding: 0 24px; flex-shrink: 0; }
-    .scan-btn { width: 100%; height: 180px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s, background 0.2s; }
-    .scan-btn:active { background: var(--surface2); border-color: var(--green); }
+    .scan-btn { width: 100%; height: 180px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; cursor: pointer; position: relative; overflow: hidden; }
     .scan-btn::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 120%, rgba(0,230,118,0.06) 0%, transparent 70%); pointer-events: none; }
     .scan-corners span { position: absolute; width: 20px; height: 20px; border-color: var(--green); border-style: solid; opacity: 0.7; }
-    .scan-corners span:nth-child(1) { top: 14px; left: 14px; border-width: 2px 0 0 2px; border-radius: 3px 0 0 0; }
-    .scan-corners span:nth-child(2) { top: 14px; right: 14px; border-width: 2px 2px 0 0; border-radius: 0 3px 0 0; }
-    .scan-corners span:nth-child(3) { bottom: 14px; left: 14px; border-width: 0 0 2px 2px; border-radius: 0 0 0 3px; }
-    .scan-corners span:nth-child(4) { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; border-radius: 0 0 3px 0; }
+    .scan-corners span:nth-child(1) { top: 14px; left: 14px; border-width: 2px 0 0 2px; }
+    .scan-corners span:nth-child(2) { top: 14px; right: 14px; border-width: 2px 2px 0 0; }
+    .scan-corners span:nth-child(3) { bottom: 14px; left: 14px; border-width: 0 0 2px 2px; }
+    .scan-corners span:nth-child(4) { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
     .scan-icon-ring { width: 60px; height: 60px; border: 1.5px solid var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--green-dim); }
-    .scan-icon-ring svg { width: 26px; height: 26px; }
-    .scan-label { font-size: 13px; color: var(--text2); letter-spacing: 0.04em; }
+    .scan-label { font-size: 13px; color: var(--text2); }
 
-    /* Stats row */
+    /* Stats */
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 24px 0; flex-shrink: 0; }
     .stat { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
-    .stat-val { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--text); }
+    .stat-val { font-family: var(--mono); font-size: 20px; font-weight: 700; }
     .stat-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
 
     /* History */
     .section-title { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono); padding: 20px 24px 10px; flex-shrink: 0; }
     .scan-list { padding: 0 24px 100px; display: flex; flex-direction: column; gap: 8px; }
     .scan-item { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .scan-item-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .scan-item-name { font-size: 14px; font-weight: 500; }
     .scan-item-meta { font-size: 11px; color: var(--text3); margin-top: 3px; }
     .ticket-badge { font-family: var(--mono); font-size: 11px; color: var(--green); background: var(--green-dim); border: 0.5px solid rgba(0,230,118,0.2); padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
-
-    /* Terms */
     .terms { font-size: 11px; color: var(--text3); text-align: center; padding: 16px 24px 32px; line-height: 1.6; flex-shrink: 0; }
     .terms a { color: var(--green); text-decoration: none; }
+    .empty { text-align: center; padding: 32px 24px; color: var(--text3); font-size: 13px; }
 
     /* Scanning screen */
     #scanning { background: #000; }
-    .camera-wrap { flex: 1; position: relative; overflow: hidden; }
-    #video { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .camera-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-    .camera-frame { width: 220px; height: 220px; position: relative; }
-    .camera-frame span { position: absolute; width: 28px; height: 28px; border-color: var(--green); border-style: solid; }
-    .camera-frame span:nth-child(1) { top: 0; left: 0; border-width: 3px 0 0 3px; }
-    .camera-frame span:nth-child(2) { top: 0; right: 0; border-width: 3px 3px 0 0; }
-    .camera-frame span:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 3px 3px; }
-    .camera-frame span:nth-child(4) { bottom: 0; right: 0; border-width: 0 3px 3px 0; }
-    .scan-line { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--green), transparent); animation: scanLine 2s ease-in-out infinite; top: 50%; }
-    @keyframes scanLine { 0%, 100% { top: 10%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 50% { top: 90%; } }
-    .camera-hint { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 24px; text-align: center; font-family: var(--mono); letter-spacing: 0.04em; }
-    .gps-pill { margin-top: 12px; background: rgba(0,230,118,0.15); border: 0.5px solid rgba(0,230,118,0.3); border-radius: 20px; padding: 5px 14px; font-size: 11px; color: var(--green); font-family: var(--mono); display: flex; align-items: center; gap: 6px; }
+    .scan-prompt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 40px 24px; }
+    .scan-prompt-icon { width: 120px; height: 120px; border: 2px solid var(--green); border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(0,230,118,0.08); position: relative; }
+    .scan-prompt-icon span { position: absolute; width: 24px; height: 24px; border-color: var(--green); border-style: solid; }
+    .scan-prompt-icon span:nth-child(1) { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+    .scan-prompt-icon span:nth-child(2) { top: -2px; right: -2px; border-width: 3px 3px 0 0; }
+    .scan-prompt-icon span:nth-child(3) { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; }
+    .scan-prompt-icon span:nth-child(4) { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+    .scan-prompt-text { text-align: center; }
+    .scan-prompt-text h2 { font-family: var(--mono); font-size: 18px; color: var(--text); margin-bottom: 8px; }
+    .scan-prompt-text p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .gps-pill { background: rgba(0,230,118,0.15); border: 0.5px solid rgba(0,230,118,0.3); border-radius: 20px; padding: 6px 14px; font-size: 12px; color: var(--green); font-family: var(--mono); display: flex; align-items: center; gap: 6px; }
     .gps-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     .camera-actions { padding: 24px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
 
     /* Buttons */
-    .btn { width: 100%; padding: 14px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: transparent; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; font-family: var(--sans); transition: background 0.15s; }
-    .btn:active { background: var(--surface2); }
+    .btn { width: 100%; padding: 14px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: transparent; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; font-family: var(--sans); }
     .btn-primary { background: var(--green); border-color: var(--green); color: #000; font-weight: 600; }
-    .btn-primary:active { background: #00c060; }
     .btn-ghost { border-color: transparent; color: var(--text3); }
 
-    /* Result screen */
+    /* Result */
     .result-header { padding: 52px 24px 0; text-align: center; flex-shrink: 0; }
     .result-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--green-dim); border: 1.5px solid rgba(0,230,118,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
-    .result-icon svg { width: 28px; height: 28px; }
-    .result-title { font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--text); }
+    .result-title { font-family: var(--mono); font-size: 24px; font-weight: 700; }
     .result-sub { font-size: 14px; color: var(--text2); margin-top: 6px; }
-
-    .ticket-card { margin: 20px 24px 0; background: var(--surface); border: 1px dashed rgba(0,230,118,0.3); border-radius: var(--radius-lg); padding: 20px; text-align: center; position: relative; overflow: hidden; }
-    .ticket-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(0,230,118,0.08) 0%, transparent 60%); pointer-events: none; }
+    .ticket-card { margin: 20px 24px 0; background: var(--surface); border: 1px dashed rgba(0,230,118,0.3); border-radius: var(--radius-lg); padding: 20px; text-align: center; }
     .ticket-num-large { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--green); letter-spacing: 3px; }
     .ticket-sub { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; font-family: var(--mono); }
-
     .data-card { margin: 12px 24px 0; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; flex-shrink: 0; }
     .data-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
     .data-row:last-child { border-bottom: none; }
     .data-key { font-size: 12px; color: var(--text3); font-family: var(--mono); }
     .data-val { font-size: 13px; color: var(--text); text-align: right; max-width: 60%; word-break: break-all; }
     .data-val.mono { font-family: var(--mono); font-size: 12px; color: var(--green); }
-
     .result-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
 
-    /* Email screen */
+    /* Email */
     .email-wrap { padding: 52px 24px 0; flex: 1; }
     .email-title { font-family: var(--mono); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
     .email-sub { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 28px; }
     .field label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--mono); display: block; margin-bottom: 8px; }
-    .field input { width: 100%; padding: 14px 16px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 16px; color: var(--text); font-family: var(--sans); outline: none; transition: border-color 0.2s; }
-    .field input:focus { border-color: var(--green); }
+    .field input { width: 100%; padding: 14px 16px; background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 16px; color: var(--text); font-family: var(--sans); outline: none; }
     .email-actions { padding: 16px 24px 40px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
 
-    /* Empty state */
-    .empty { text-align: center; padding: 32px 24px; color: var(--text3); font-size: 13px; }
-    
-    /* Error toast */
-    .toast { position: fixed; bottom: 24px; left: 24px; right: 24px; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 14px 16px; font-size: 14px; color: var(--text); z-index: 100; transform: translateY(80px); opacity: 0; transition: all 0.3s ease; }
+    /* Toast */
+    .toast { position: fixed; bottom: 24px; left: 24px; right: 24px; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 14px 16px; font-size: 14px; color: var(--text); z-index: 100; transform: translateY(80px); opacity: 0; transition: all 0.3s ease; pointer-events: none; }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.error { border-color: #ff5252; color: #ff5252; }
   </style>
@@ -152,7 +131,7 @@
 <body>
 <div id="app">
 
-  <!-- HOME SCREEN -->
+  <!-- HOME -->
   <div id="home" class="screen active">
     <div class="header">
       <div>
@@ -167,21 +146,19 @@
 
     <div class="scan-wrap">
       <div class="scan-btn" onclick="startScan()">
-        <div class="scan-corners">
-          <span></span><span></span><span></span><span></span>
-        </div>
+        <div class="scan-corners"><span></span><span></span><span></span><span></span></div>
         <div class="scan-icon-ring">
-          <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="3" width="7" height="7" rx="1" stroke="#00e676" stroke-width="1.5"/>
-            <rect x="16" y="3" width="7" height="7" rx="1" stroke="#00e676" stroke-width="1.5"/>
-            <rect x="3" y="16" width="7" height="7" rx="1" stroke="#00e676" stroke-width="1.5"/>
-            <rect x="5" y="5" width="3" height="3" fill="#00e676"/>
-            <rect x="18" y="5" width="3" height="3" fill="#00e676"/>
-            <rect x="5" y="18" width="3" height="3" fill="#00e676"/>
-            <rect x="16" y="16" width="2" height="2" fill="#00e676"/>
-            <rect x="20" y="16" width="2" height="2" fill="#00e676"/>
-            <rect x="16" y="20" width="2" height="2" fill="#00e676"/>
-            <rect x="20" y="20" width="2" height="2" fill="#00e676"/>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect x="3" y="3" width="8" height="8" rx="1" stroke="#00e676" stroke-width="1.5"/>
+            <rect x="17" y="3" width="8" height="8" rx="1" stroke="#00e676" stroke-width="1.5"/>
+            <rect x="3" y="17" width="8" height="8" rx="1" stroke="#00e676" stroke-width="1.5"/>
+            <rect x="5" y="5" width="4" height="4" fill="#00e676"/>
+            <rect x="19" y="5" width="4" height="4" fill="#00e676"/>
+            <rect x="5" y="19" width="4" height="4" fill="#00e676"/>
+            <rect x="17" y="17" width="2" height="2" fill="#00e676"/>
+            <rect x="21" y="17" width="2" height="2" fill="#00e676"/>
+            <rect x="17" y="21" width="2" height="2" fill="#00e676"/>
+            <rect x="21" y="21" width="2" height="2" fill="#00e676"/>
           </svg>
         </div>
         <div class="scan-label">tap to scan barcode</div>
@@ -189,48 +166,51 @@
     </div>
 
     <div class="stats">
-      <div class="stat">
-        <div class="stat-val" id="today-count">0</div>
-        <div class="stat-lbl">today</div>
-      </div>
-      <div class="stat">
-        <div class="stat-val" id="total-count">0</div>
-        <div class="stat-lbl">total scans</div>
-      </div>
+      <div class="stat"><div class="stat-val" id="today-count">0</div><div class="stat-lbl">today</div></div>
+      <div class="stat"><div class="stat-val" id="total-count">0</div><div class="stat-lbl">total scans</div></div>
     </div>
 
     <div class="section-title">recent scans</div>
-    <div class="scan-list" id="scan-list">
-      <div class="empty">no scans yet — bin something to start!</div>
-    </div>
-
-    <div class="terms">
-      By scanning you agree to the <a href="#" onclick="showTerms()">T&amp;Cs</a> · Free to enter · No purchase necessary
-    </div>
+    <div class="scan-list" id="scan-list"><div class="empty">no scans yet — bin something to start!</div></div>
+    <div class="terms">By scanning you agree to the <a href="#" onclick="showTerms();return false;">T&amp;Cs</a> · Free to enter · No purchase necessary</div>
   </div>
 
-  <!-- SCANNING SCREEN -->
+  <!-- SCANNING -->
   <div id="scanning" class="screen">
-    <div class="camera-wrap">
-      <video id="video" autoplay muted playsinline></video>
-      <div class="camera-overlay">
-        <div class="camera-frame">
-          <span></span><span></span><span></span><span></span>
-          <div class="scan-line"></div>
-        </div>
-        <div class="camera-hint">point at GS1 barcode</div>
-        <div class="gps-pill">
-          <div class="gps-dot"></div>
-          <span id="gps-status">locating...</span>
-        </div>
+    <!-- Hidden file input — triggers iPhone native camera -->
+    <input type="file" id="barcode-file" accept="image/*" capture="environment" style="display:none;" onchange="handleImageCapture(event)" />
+    <div class="scan-prompt">
+      <div class="scan-prompt-icon">
+        <span></span><span></span><span></span><span></span>
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect x="6" y="6" width="13" height="13" rx="1.5" stroke="#00e676" stroke-width="2"/>
+          <rect x="29" y="6" width="13" height="13" rx="1.5" stroke="#00e676" stroke-width="2"/>
+          <rect x="6" y="29" width="13" height="13" rx="1.5" stroke="#00e676" stroke-width="2"/>
+          <rect x="9" y="9" width="7" height="7" fill="#00e676"/>
+          <rect x="32" y="9" width="7" height="7" fill="#00e676"/>
+          <rect x="9" y="32" width="7" height="7" fill="#00e676"/>
+          <rect x="29" y="29" width="4" height="4" fill="#00e676"/>
+          <rect x="35" y="29" width="4" height="4" fill="#00e676"/>
+          <rect x="29" y="35" width="4" height="4" fill="#00e676"/>
+          <rect x="35" y="35" width="4" height="4" fill="#00e676"/>
+        </svg>
+      </div>
+      <div class="scan-prompt-text">
+        <h2>scan barcode</h2>
+        <p>point your camera at the barcode<br/>on the packaging you're binning</p>
+      </div>
+      <div class="gps-pill">
+        <div class="gps-dot"></div>
+        <span id="gps-status">locating...</span>
       </div>
     </div>
     <div class="camera-actions">
-      <button class="btn btn-ghost" onclick="stopScan()">cancel</button>
+      <button class="btn btn-primary" onclick="openCamera()">open camera</button>
+      <button class="btn btn-ghost" onclick="showScreen('home')">cancel</button>
     </div>
   </div>
 
-  <!-- RESULT SCREEN -->
+  <!-- RESULT -->
   <div id="result" class="screen">
     <div class="result-header">
       <div class="result-icon">
@@ -239,46 +219,28 @@
       <div class="result-title">binned!</div>
       <div class="result-sub" id="result-product">product scanned</div>
     </div>
-
     <div class="ticket-card">
       <div class="ticket-num-large" id="result-ticket">—</div>
       <div class="ticket-sub">your prize draw ticket</div>
     </div>
-
     <div class="data-card">
-      <div class="data-row">
-        <span class="data-key">barcode</span>
-        <span class="data-val mono" id="result-barcode">—</span>
-      </div>
-      <div class="data-row">
-        <span class="data-key">format</span>
-        <span class="data-val" id="result-format">—</span>
-      </div>
-      <div class="data-row">
-        <span class="data-key">location</span>
-        <span class="data-val" id="result-location">—</span>
-      </div>
-      <div class="data-row">
-        <span class="data-key">accuracy</span>
-        <span class="data-val" id="result-accuracy">—</span>
-      </div>
-      <div class="data-row">
-        <span class="data-key">time</span>
-        <span class="data-val" id="result-time">—</span>
-      </div>
+      <div class="data-row"><span class="data-key">barcode</span><span class="data-val mono" id="result-barcode">—</span></div>
+      <div class="data-row"><span class="data-key">format</span><span class="data-val" id="result-format">—</span></div>
+      <div class="data-row"><span class="data-key">location</span><span class="data-val" id="result-location">—</span></div>
+      <div class="data-row"><span class="data-key">accuracy</span><span class="data-val" id="result-accuracy">—</span></div>
+      <div class="data-row"><span class="data-key">time</span><span class="data-val" id="result-time">—</span></div>
     </div>
-
     <div class="result-actions">
       <button class="btn btn-primary" onclick="showScreen('email')">save my ticket</button>
       <button class="btn" onclick="showScreen('home')">skip for now</button>
     </div>
   </div>
 
-  <!-- EMAIL SCREEN -->
+  <!-- EMAIL -->
   <div id="email" class="screen">
     <div class="email-wrap">
       <div class="email-title">save your ticket</div>
-      <div class="email-sub">enter your email to back up your tickets. you only need to register if you win — we'll never spam you.</div>
+      <div class="email-sub">enter your email to back up your tickets. you only need to register if you win.</div>
       <div class="field">
         <label>email address</label>
         <input type="email" id="email-input" placeholder="you@example.com" />
@@ -292,118 +254,85 @@
   </div>
 
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
   const SUPABASE_URL = 'https://moaszzhcqnhhlemdgurq.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_lms1xSA7h0rcI_K27ajYmQ_zCAHu-sw';
 
-  let currentScan = null;
   let gpsCoords = null;
-  let codeReader = null;
-  let scanStream = null;
+  let currentScan = null;
 
-  // --- Storage helpers ---
-  function getScans() {
-    try { return JSON.parse(localStorage.getItem('bingo_scans') || '[]'); } catch { return []; }
-  }
-  function saveScans(scans) {
-    localStorage.setItem('bingo_scans', JSON.stringify(scans));
-  }
+  function getScans() { try { return JSON.parse(localStorage.getItem('bingo_scans') || '[]'); } catch { return []; } }
+  function saveScans(s) { localStorage.setItem('bingo_scans', JSON.stringify(s)); }
   function getDeviceId() {
     let id = localStorage.getItem('bingo_device_id');
     if (!id) { id = 'dev_' + Math.random().toString(36).slice(2, 12); localStorage.setItem('bingo_device_id', id); }
     return id;
   }
   function generateTicketId() {
-    const d = new Date();
-    const y = d.getFullYear();
     const seq = (getScans().length + 1).toString().padStart(4, '0');
-    return `BG-${y}-${seq}`;
+    return `BG-${new Date().getFullYear()}-${seq}`;
   }
 
-  // --- Screen navigation ---
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
 
-  // --- Toast ---
-  function showToast(msg, isError = false) {
+  function showToast(msg, isError) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.className = 'toast show' + (isError ? ' error' : '');
     setTimeout(() => t.className = 'toast', 3000);
   }
 
-  // --- GPS ---
   function getGPS() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (!navigator.geolocation) { resolve(null); return; }
       navigator.geolocation.getCurrentPosition(
-        pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy }),
+        p => resolve({ lat: p.coords.latitude, lng: p.coords.longitude, accuracy: p.coords.accuracy }),
         () => resolve(null),
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 10000 }
       );
     });
   }
 
-  // --- Start scan ---
-  async function startScan() {
+  function startScan() {
     showScreen('scanning');
     document.getElementById('gps-status').textContent = 'locating...';
-    
-    // Start GPS in parallel
     getGPS().then(coords => {
       gpsCoords = coords;
-      if (coords) {
-        const lat = coords.lat.toFixed(4);
-        const lng = coords.lng.toFixed(4);
-        document.getElementById('gps-status').textContent = `${lat}, ${lng}`;
+      document.getElementById('gps-status').textContent = coords
+        ? `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`
+        : 'GPS unavailable';
+    });
+  }
+
+  function openCamera() {
+    document.getElementById('barcode-file').click();
+  }
+
+  function handleImageCapture(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    Quagga.decodeSingle({
+      decoder: { readers: ['ean_reader','ean_8_reader','code_128_reader','upc_reader','upc_e_reader','code_39_reader','datamatrix_reader'] },
+      locate: true,
+      src: url
+    }, function(result) {
+      URL.revokeObjectURL(url);
+      event.target.value = '';
+      if (result && result.codeResult) {
+        handleScanResult(result.codeResult.code, result.codeResult.format);
       } else {
-        document.getElementById('gps-status').textContent = 'GPS unavailable';
+        showToast('barcode not detected — try again with better lighting', true);
       }
-    });
-
-    // Start Quagga scanner (works on iPhone Safari)
-    Quagga.init({
-      inputStream: {
-        name: 'Live',
-        type: 'LiveStream',
-        target: document.getElementById('video'),
-        constraints: { facingMode: 'environment', width: 1280, height: 720 }
-      },
-      decoder: {
-        readers: ['ean_reader','ean_8_reader','code_128_reader','upc_reader','upc_e_reader','code_39_reader','datamatrix_reader']
-      },
-      locate: true
-    }, function(err) {
-      if (err) {
-        showToast('camera access denied', true);
-        showScreen('home');
-        return;
-      }
-      Quagga.start();
-    });
-
-    Quagga.onDetected(function(result) {
-      const code = result.codeResult.code;
-      const format = result.codeResult.format;
-      if (code) handleScanResult(code, format);
     });
   }
 
-  // --- Stop scan ---
-  function stopScan() {
-    try { Quagga.stop(); } catch {}
-    showScreen('home');
-  }
-
-  // --- Handle scan result ---
   async function handleScanResult(barcodeValue, format) {
-    stopScan();
-
     const ticketId = generateTicketId();
     const now = new Date();
     const scan = {
@@ -418,122 +347,76 @@
       synced: false
     };
 
-    // Save locally
     const scans = getScans();
     scans.unshift(scan);
     saveScans(scans);
     currentScan = scan;
-
-    // Try to sync to Supabase
     syncScan(scan);
 
-    // Update result screen
-    document.getElementById('result-product').textContent = barcodeValue.length > 30 ? barcodeValue.slice(0, 30) + '...' : barcodeValue;
+    document.getElementById('result-product').textContent = barcodeValue.length > 30 ? barcodeValue.slice(0,30)+'...' : barcodeValue;
     document.getElementById('result-ticket').textContent = ticketId;
     document.getElementById('result-barcode').textContent = barcodeValue;
     document.getElementById('result-format').textContent = format || 'GS1';
     document.getElementById('result-location').textContent = gpsCoords
       ? `${gpsCoords.lat.toFixed(4)}°N ${Math.abs(gpsCoords.lng).toFixed(4)}°W`
       : 'unavailable';
-    document.getElementById('result-accuracy').textContent = gpsCoords
-      ? `±${Math.round(gpsCoords.accuracy)}m`
-      : '—';
-    document.getElementById('result-time').textContent = now.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    document.getElementById('result-accuracy').textContent = gpsCoords ? `±${Math.round(gpsCoords.accuracy)}m` : '—';
+    document.getElementById('result-time').textContent = now.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
     updateHomeUI();
     showScreen('result');
   }
 
-  // --- Supabase sync ---
   async function syncScan(scan) {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/scans`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({
-          ticket_id: scan.ticket_id,
-          barcode: scan.barcode,
-          format: scan.format,
-          lat: scan.lat,
-          lng: scan.lng,
-          accuracy_metres: scan.accuracy ? Math.round(scan.accuracy) : null,
-          scanned_at: scan.timestamp,
-          device_id: scan.device_id
-        })
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ ticket_id: scan.ticket_id, barcode: scan.barcode, format: scan.format, lat: scan.lat, lng: scan.lng, accuracy_metres: scan.accuracy ? Math.round(scan.accuracy) : null, scanned_at: scan.timestamp, device_id: scan.device_id })
       });
       if (res.ok) {
         const scans = getScans();
         const idx = scans.findIndex(s => s.ticket_id === scan.ticket_id);
         if (idx > -1) { scans[idx].synced = true; saveScans(scans); }
       }
-    } catch (e) {
-      // Silent fail — data is safe locally
-    }
+    } catch {}
   }
 
-  // --- Save email ---
   async function saveEmail() {
     const email = document.getElementById('email-input').value.trim();
     if (!email || !email.includes('@')) { showToast('please enter a valid email', true); return; }
-    
     try {
       await fetch(`${SUPABASE_URL}/rest/v1/email_captures`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Prefer': 'return=minimal'
-        },
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'return=minimal' },
         body: JSON.stringify({ email, device_id: getDeviceId(), captured_at: new Date().toISOString() })
       });
     } catch {}
-
     localStorage.setItem('bingo_email', email);
     showToast('ticket saved!');
     showScreen('home');
   }
 
-  // --- Update home UI ---
   function updateHomeUI() {
     const scans = getScans();
     const today = new Date().toDateString();
     const todayScans = scans.filter(s => new Date(s.timestamp).toDateString() === today);
-    
     document.getElementById('ticket-count').textContent = scans.length;
     document.getElementById('today-count').textContent = todayScans.length;
     document.getElementById('total-count').textContent = scans.length;
-
     const list = document.getElementById('scan-list');
-    if (scans.length === 0) {
-      list.innerHTML = '<div class="empty">no scans yet — bin something to start!</div>';
-      return;
-    }
-    list.innerHTML = scans.slice(0, 10).map(s => {
+    if (!scans.length) { list.innerHTML = '<div class="empty">no scans yet — bin something to start!</div>'; return; }
+    list.innerHTML = scans.slice(0,10).map(s => {
       const d = new Date(s.timestamp);
-      const timeStr = d.toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-      const locStr = s.lat ? `${s.lat.toFixed(3)}°N` : 'no GPS';
-      const label = s.barcode.length > 22 ? s.barcode.slice(0, 22) + '…' : s.barcode;
-      return `<div class="scan-item">
-        <div>
-          <div class="scan-item-name">${label}</div>
-          <div class="scan-item-meta">${timeStr} · ${locStr}</div>
-        </div>
-        <div class="ticket-badge">${s.ticket_id}</div>
-      </div>`;
+      const t = d.toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+      const loc = s.lat ? `${s.lat.toFixed(3)}°N` : 'no GPS';
+      const label = s.barcode.length > 22 ? s.barcode.slice(0,22)+'…' : s.barcode;
+      return `<div class="scan-item"><div><div class="scan-item-name">${label}</div><div class="scan-item-meta">${t} · ${loc}</div></div><div class="ticket-badge">${s.ticket_id}</div></div>`;
     }).join('');
   }
 
-  function showTerms() {
-    showToast('T&Cs: free to enter, no purchase necessary, 18+, UK residents only');
-  }
+  function showTerms() { showToast('T&Cs: free to enter, no purchase necessary, 18+, UK residents only'); }
 
-  // Init
   updateHomeUI();
 </script>
 </body>
