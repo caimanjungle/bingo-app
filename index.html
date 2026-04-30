@@ -320,34 +320,43 @@
     document.getElementById('barcode-file').click();
   }
 
-  function loadQuagga(callback) {
-    if (window.Quagga) { callback(); return; }
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js';
-    s.onload = callback;
-    s.onerror = () => showToast('scanner failed to load', true);
-    document.head.appendChild(s);
-  }
-
   function handleImageCapture(event) {
     const file = event.target.files[0];
     if (!file) return;
-    loadQuagga(function() {
-      const url = URL.createObjectURL(file);
-      Quagga.decodeSingle({
-        decoder: { readers: ['ean_reader','ean_8_reader','code_128_reader','upc_reader','upc_e_reader','code_39_reader','datamatrix_reader'] },
-        locate: true,
-        src: url
-      }, function(result) {
-        URL.revokeObjectURL(url);
-        event.target.value = '';
-        if (result && result.codeResult) {
-          handleScanResult(result.codeResult.code, result.codeResult.format);
-        } else {
-          showToast('barcode not detected — try again with better lighting', true);
-        }
-      });
-    });
+    showToast('reading barcode...');
+    
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX = 1200;
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      event.target.value = '';
+      
+      // Try BarcodeDetector API first (native, very accurate)
+      if ('BarcodeDetector' in window) {
+        const detector = new BarcodeDetector({ formats: ['ean_13','ean_8','code_128','code_39','upc_a','upc_e','qr_code','data_matrix','itf'] });
+        detector.detect(canvas).then(barcodes => {
+          if (barcodes.length > 0) {
+            handleScanResult(barcodes[0].rawValue, barcodes[0].format);
+          } else {
+            showToast('barcode not detected — try closer with good lighting', true);
+          }
+        }).catch(() => {
+          showToast('barcode not detected — try again', true);
+        });
+      } else {
+        // Fallback: try to use canvas data with simple check
+        showToast('barcode not detected — try entering manually', true);
+      }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); showToast('image error', true); };
+    img.src = url;
   }
 
   async function handleScanResult(barcodeValue, format) {
