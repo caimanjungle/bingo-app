@@ -11,7 +11,9 @@
   <link rel="manifest" href="/manifest.json" />
   <title>BIN-GO</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
+  #qr-reader-hidden { display: none; }
     :root {
       --bg: #0a0a0a; --surface: #141414; --surface2: #1e1e1e;
       --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
@@ -236,6 +238,7 @@
   </div>
 
 </div>
+<div id="qr-reader-hidden"></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -372,30 +375,15 @@
       var file = e.target.files[0];
       if (!file) return;
       toast('reading barcode...');
-      if ('BarcodeDetector' in window) {
-        var img = new Image();
-        var url = URL.createObjectURL(file);
-        img.onload = function() {
-          var detector = new BarcodeDetector({ formats: ['ean_13','ean_8','code_128','code_39','upc_a','upc_e','qr_code','data_matrix'] });
-          detector.detect(img).then(function(results) {
-            URL.revokeObjectURL(url);
-            e.target.value = '';
-            if (results.length > 0) {
-              handleScanResult(results[0].rawValue, results[0].format);
-            } else {
-              toast('barcode not detected — try again or enter manually', true);
-            }
-          }).catch(function() {
-            URL.revokeObjectURL(url);
-            e.target.value = '';
-            toast('could not read barcode — try entering manually', true);
-          });
-        };
-        img.src = url;
-      } else {
-        toast('camera scan not supported — please enter manually', true);
+      // Use html5-qrcode to decode the image file
+      var html5QrCode = new Html5Qrcode('qr-reader-hidden');
+      html5QrCode.scanFile(file, true).then(function(decoded) {
         e.target.value = '';
-      }
+        handleScanResult(decoded, 'SCAN');
+      }).catch(function(err) {
+        e.target.value = '';
+        toast('barcode not detected — try closer with good lighting', true);
+      });
     });
 
     // Manual entry toggle
