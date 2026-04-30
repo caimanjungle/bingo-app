@@ -360,6 +360,7 @@
   }
 
   async function handleScanResult(barcodeValue, format) {
+    try {
     const ticketId = generateTicketId();
     const now = new Date();
     const scan = {
@@ -390,8 +391,11 @@
     document.getElementById('result-accuracy').textContent = gpsCoords ? `±${Math.round(gpsCoords.accuracy)}m` : '—';
     document.getElementById('result-time').textContent = now.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
-    updateHomeUI();
-    showScreen('result');
+      updateHomeUI();
+      showScreen('result');
+    } catch(e) {
+      showToast('scan error: ' + e.message, true);
+    }
   }
 
   async function syncScan(scan) {
@@ -451,7 +455,11 @@
   function submitManual() {
     const val = document.getElementById('manual-barcode').value.trim();
     if (!val) { showToast('please enter a barcode', true); return; }
-    handleScanResult(val, 'MANUAL');
+    try {
+      handleScanResult(val, 'MANUAL');
+    } catch(e) {
+      showToast('error: ' + e.message, true);
+    }
   }
 
   function showTerms() { showToast('T&Cs: free to enter, no purchase necessary, 18+, UK residents only'); }
