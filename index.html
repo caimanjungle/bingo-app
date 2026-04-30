@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <script src="https://unpkg.com/@zxing/browser@0.1.1/umd/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
   <style>
     :root {
       --bg: #0a0a0a;
@@ -365,34 +366,37 @@
       }
     });
 
-    // Start camera
-    try {
-      if (typeof ZXingBrowser !== 'undefined') {
-        codeReader = new ZXingBrowser.BrowserMultiFormatReader();
-        const videoEl = document.getElementById('video');
-        scanStream = await codeReader.decodeFromVideoDevice(undefined, videoEl, (result, err) => {
-          if (result) {
-            handleScanResult(result.getText(), result.getBarcodeFormat().toString());
-          }
-        });
-      } else {
-        // Fallback: use getUserMedia only, no decode
-        scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        document.getElementById('video').srcObject = scanStream;
-        showToast('scanner library loading — try again shortly');
+    // Start Quagga scanner (works on iPhone Safari)
+    Quagga.init({
+      inputStream: {
+        name: 'Live',
+        type: 'LiveStream',
+        target: document.getElementById('video'),
+        constraints: { facingMode: 'environment', width: 1280, height: 720 }
+      },
+      decoder: {
+        readers: ['ean_reader','ean_8_reader','code_128_reader','upc_reader','upc_e_reader','code_39_reader','datamatrix_reader']
+      },
+      locate: true
+    }, function(err) {
+      if (err) {
+        showToast('camera access denied', true);
+        showScreen('home');
+        return;
       }
-    } catch (e) {
-      showToast('camera access denied', true);
-      showScreen('home');
-    }
+      Quagga.start();
+    });
+
+    Quagga.onDetected(function(result) {
+      const code = result.codeResult.code;
+      const format = result.codeResult.format;
+      if (code) handleScanResult(code, format);
+    });
   }
 
   // --- Stop scan ---
   function stopScan() {
-    if (codeReader) { try { codeReader.reset(); } catch {} codeReader = null; }
-    if (scanStream) { try { scanStream.getTracks?.().forEach(t => t.stop()); } catch {} scanStream = null; }
-    const video = document.getElementById('video');
-    video.srcObject = null;
+    try { Quagga.stop(); } catch {}
     showScreen('home');
   }
 
