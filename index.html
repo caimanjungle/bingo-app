@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
-  #qr-reader-hidden { display: none; }
+  #qr-reader-hidden { display: none; max-height: 300px; overflow: hidden; border-radius: 12px; margin: 0 24px; }
     :root {
       --bg: #0a0a0a; --surface: #141414; --surface2: #1e1e1e;
       --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
@@ -365,25 +365,33 @@
       startGPS();
     });
 
-    // Camera button
+    // Camera button - live scanner
+    var liveScanner = null;
     document.getElementById('camera-btn').addEventListener('click', function() {
-      document.getElementById('barcode-file').click();
+      var readerEl = document.getElementById('qr-reader-hidden');
+      readerEl.style.display = 'block';
+      readerEl.style.width = '100%';
+      document.getElementById('camera-btn').textContent = 'stop camera';
+      document.getElementById('camera-btn').removeEventListener('click', arguments.callee);
+
+      liveScanner = new Html5Qrcode('qr-reader-hidden');
+      liveScanner.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        function(decoded) {
+          liveScanner.stop().catch(function(){});
+          readerEl.style.display = 'none';
+          handleScanResult(decoded, 'SCAN');
+        },
+        function(err) { /* scanning */ }
+      ).catch(function(err) {
+        toast('camera error: ' + err, true);
+      });
     });
 
-    // File input change
+    // File input change - keep as fallback but not used
     document.getElementById('barcode-file').addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      toast('reading barcode...');
-      // Use html5-qrcode to decode the image file
-      var html5QrCode = new Html5Qrcode('qr-reader-hidden');
-      html5QrCode.scanFile(file, true).then(function(decoded) {
-        e.target.value = '';
-        handleScanResult(decoded, 'SCAN');
-      }).catch(function(err) {
-        e.target.value = '';
-        toast('barcode not detected — try closer with good lighting', true);
-      });
+      e.target.value = '';
     });
 
     // Manual entry toggle
@@ -401,7 +409,12 @@
     });
 
     // Cancel
-    document.getElementById('cancel-btn').addEventListener('click', function() { showScreen('home'); });
+    document.getElementById('cancel-btn').addEventListener('click', function() {
+      if (liveScanner) { liveScanner.stop().catch(function(){}); liveScanner = null; }
+      var readerEl = document.getElementById('qr-reader-hidden');
+      readerEl.style.display = 'none';
+      showScreen('home');
+    });
 
     // Save ticket
     document.getElementById('save-ticket-btn').addEventListener('click', function() { showScreen('email'); });
