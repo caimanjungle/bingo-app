@@ -310,7 +310,11 @@
       method:'POST',
       headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=minimal'},
       body:JSON.stringify({ticket_id:scan.ticket_id,barcode:scan.barcode,format:scan.format,lat:scan.lat,lng:scan.lng,accuracy_metres:scan.accuracy?Math.round(scan.accuracy):null,scanned_at:scan.timestamp,device_id:scan.device_id})
-    }).catch(function(){});
+    }).then(function(res) {
+      if (!res.ok) {
+        res.text().then(function(txt) { toast('sync error: ' + txt.slice(0,80), true); });
+      }
+    }).catch(function(e){ toast('sync failed: ' + e.message, true); });
   }
 
   function updateHomeUI() {
