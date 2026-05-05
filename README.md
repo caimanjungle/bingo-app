@@ -1,4 +1,3 @@
-# BIN-GO 🎯
 
 > Bin it. Track it. Win it.
 
@@ -75,21 +74,6 @@ Visit your Vercel URL on a phone → tap the share button → "Add to Home Scree
 - Progressive registration — only required at prize claim
 - Data retained per UK GDPR requirements
 
-- What's Working (React Native MVP1):
-
-✅ BIN-GO scan screen (logo, tagline, input, BIN IT button)
-✅ Ticket generation (BG-YEAR-RAND-SEQ format)
-✅ Supabase saving via direct REST API
-✅ Camera permission granted and detected
-✅ "Scan with Camera" button showing
-
-Next session — pick up here:
-
-Wire up actual barcode scanning using vision-camera v3 frame processor
-Check what barcode plugins are available: ls node_modules | grep barcode
-Then GPS
-
-Key facts to remember:
 
 Camera permission status returns 'granted' not 'authorized' in v3.9.2
 Supabase uses direct REST fetch (not the client library — WebSocket conflict)
