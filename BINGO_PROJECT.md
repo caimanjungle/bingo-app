@@ -127,6 +127,7 @@ GPS coordinates automatically mapped to England / Scotland / Wales / Northern Ir
 - ❌ Prize draw management
 - ❌ Full branding/colours
 
+- 
 ---
 
 ## Next Phase: React Native App
@@ -168,6 +169,13 @@ GPS coordinates automatically mapped to England / Scotland / Wales / Northern Ir
 
 ---
 
+What's Working (React Native)":
+
+✅ Basic scan screen (logo, tagline, input, button)
+✅ Ticket generation (BG-YEAR-RAND-SEQ format)
+✅ Running on iOS simulator
+
+
 ## Future Roadmap
 
 - [ ] React Native app (iOS + Android)
@@ -192,5 +200,28 @@ GPS coordinates automatically mapped to England / Scotland / Wales / Northern Ir
 - **Premium tier** — photo proof of disposal for brands needing audit trail
 
 ---
+Next session we'll tackle:
+
+Supabase connection (save scans to the database)
+GPS capture
+Camera barcode scanning
 
 *Built with Claude in one session. Developer: Claude. Client: You. 😄*
+
+anon public key
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vYXN6emhjcW5oaGxlbWRndXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjIwMzAsImV4cCI6MjA5MzAzODAzMH0.jFbTu-11n9MN_O0fsxSRCUNciWxAKdFZrQvD-DpB9HQ
+
+
+Actually working:
+
+✅ BIN-GO screen with BIN IT button
+✅ Ticket generation
+
+Still to prove:
+
+❌ Supabase save (keeps erroring, haven't confirmed it works yet)
+❌ GPS
+❌ Camera scanning
+
+
