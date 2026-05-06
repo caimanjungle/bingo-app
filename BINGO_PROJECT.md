@@ -244,4 +244,33 @@ Camera permission status returns 'granted' not 'authorized' in v3.9.2
 Supabase uses direct REST fetch (not the client library — WebSocket conflict)
 Simulator is iPhone 17 Pro
 
+Yes! Here's the update for your MD file:
+What's Working (React Native MVP1):
+
+✅ BIN-GO scan screen (logo, tagline, input, BIN IT button)
+✅ Ticket generation (BG-YEAR-RAND-SEQ format)
+✅ Supabase saving via direct REST API
+✅ Camera permission granted and detected
+✅ "Scan with Camera" button showing
+✅ Camera screen opens with RNCamera (shows on real device, blank on simulator)
+✅ Barcode read handler wired up (onBarCodeRead)
+
+Next session — pick up here:
+
+Get a good USB cable to test on real iPhone
+Register iPhone as test device in Xcode
+Test live barcode scanning on real device
+Then: GPS, perceptual hash, UI polish
+
+Key facts:
+
+Bundle ID changed to com.caiman.jungle.bingo
+Apple Developer account set up (free)
+react-native-camera v4.2.1 installed for barcode scanning
+react-native-vision-camera v3.9.2 also installed (for future photo capture + hash)
+Supabase uses direct REST fetch (no client library)
+Camera permission returns 'granted' not 'authorized' in v3.9.2
+
+Go get a cable! 😄 Good session.
+
 
