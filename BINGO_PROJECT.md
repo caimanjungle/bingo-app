@@ -280,6 +280,17 @@ Prove camera barcode scan + pHash works end to end on real device
 Then: GPS on real device, then MVP1 done!
 
 
+ideas for graphics ... 
+nature/environmental feel without being preachy. Leaves would work really well as a subtle background texture behind the white, keeping the green circle front and centre.
+A few directions to consider:
+
+Subtle leaf pattern — very light, almost watermark style, so it doesn't fight the UI
+Green gradient at the top fading to white — gives depth without busyness
+Single large leaf behind the BIN-GO logo — graphic, bold, more illustrative
+
+Worth getting the iPhone working first so you can see how it feels in hand before committing to a background. Sometimes things that look great on a simulator feel different on a real device in real light.
+
+
 Key facts:
 
 Bundle ID changed to com.caiman.jungle.bingo
