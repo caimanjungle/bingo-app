@@ -247,20 +247,38 @@ Simulator is iPhone 17 Pro
 Yes! Here's the update for your MD file:
 What's Working (React Native MVP1):
 
-✅ BIN-GO scan screen (logo, tagline, input, BIN IT button)
+
+✅ BIN-GO scan screen — bold green UI, circular SNAP IT button, lottery ticket reveal
+✅ Tagline: "Bin it. Snap it. Win it."
+✅ Camera permission detection and request
+✅ Camera screen opens via RNCamera (works on real iPhone, blank on simulator)
+✅ Barcode read handler wired up — detects EAN13, EAN8, QR
+✅ On barcode read: takes photo instantly, generates perceptual hash (pHash) from image
 ✅ Ticket generation (BG-YEAR-RAND-SEQ format)
-✅ Supabase saving via direct REST API
-✅ Camera permission granted and detected
-✅ "Scan with Camera" button showing
-✅ Camera screen opens with RNCamera (shows on real device, blank on simulator)
-✅ Barcode read handler wired up (onBarCodeRead)
+✅ Saves to Supabase via direct REST API (no client library — avoids WebSocket conflict)
+✅ Fields saved: ticket_id, barcode, format, lat, lng, accuracy_metres, scanned_at, device_id, phash
+✅ GPS saves hardcoded London coords on simulator — real GPS will work on iPhone
+✅ Animated ticket reveal with spring animation
+✅ Manual barcode entry as fallback (hidden behind subtle link)
 
-Next session — pick up here:
+How it works:
 
-Get a good USB cable to test on real iPhone
+React Native 0.85 + TypeScript
+react-native-vision-camera v3.9.2 — camera permission handling
+react-native-camera v4.2.1 — live barcode scanning + photo capture
+jpeg-js — decodes photo for pHash generation
+pHash: 8x8 pixel grid → grayscale → mean threshold → 16-char hex fingerprint
+Supabase: direct REST fetch to /rest/v1/scans with anon key
+Bundle ID: com.caiman.jungle.bingo
+Apple Developer account set up (free tier)
+
+Next session:
+
+Get USB cable → test on real iPhone
 Register iPhone as test device in Xcode
-Test live barcode scanning on real device
-Then: GPS, perceptual hash, UI polish
+Prove camera barcode scan + pHash works end to end on real device
+Then: GPS on real device, then MVP1 done!
+
 
 Key facts:
 
