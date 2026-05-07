@@ -279,6 +279,15 @@ Register iPhone as test device in Xcode
 Prove camera barcode scan + pHash works end to end on real device
 Then: GPS on real device, then MVP1 done!
 
+OK — CameraView is undefined because expo-camera isn't initialising properly in bare React Native.
+Call it a night — this is a library compatibility issue that needs a fresh approach next session. You've made massive progress today:
+
+✅ App running on real iPhone
+✅ BIN-GO UI looking great
+✅ Manual scan + Supabase working on device
+
+Next session plan: Ditch expo-camera too and use a different approach — either react-native-code-scanner or write a simple native module wrapper. We'll crack it fresh.
+
 
 ideas for graphics ... 
 nature/environmental feel without being preachy. Leaves would work really well as a subtle background texture behind the white, keeping the green circle front and centre.
