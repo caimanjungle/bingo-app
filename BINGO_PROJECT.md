@@ -311,4 +311,161 @@ Camera permission returns 'granted' not 'authorized' in v3.9.2
 
 Go get a cable! 😄 Good session.
 
+What's Working (React Native MVP1 - COMPLETE):
+
+✅ BIN-GO scan screen — bold green UI, circular SNAP IT button
+✅ Tagline: "Bin it. Snap it. Win it."
+✅ Camera barcode scanning on real iPhone (react-native-camera-kit)
+✅ Ticket generation (BG-YEAR-RAND-SEQ format)
+✅ Saves to Supabase via direct REST API
+✅ Animated ticket reveal
+✅ Manual barcode entry fallback
+✅ Running on iPhone 17 via Xcode
+
+Camera library that worked: react-native-camera-kit — New Architecture compatible, no pod conflicts.
+Next up MVP2:
+
+GPS on real device
+Perceptual hash
+Real device testing with more barcodes
+Prize draw mechanics
+FMCG brand portal
+
+Go celebrate — that was a proper milestone! 🟢
+
+Here's the full update for your MD file:
+
+Business Model Update — May 2026
+Pivot: No Prize Draw
+We have moved away from the prize draw mechanic. LitterLotto proved the concept but failed on business model — dependent on sponsor funding. BIN-GO is a data business, not a lottery app.
+Revenue model:
+
+FMCG brands pay for EPR compliance disposal data
+Councils pay for litter hotspot intelligence
+Consumer app is free
+The data is the product
+
+
+Target Partnership: Keep Britain Tidy
+Why KBT:
+
+500,000+ Litter Heroes — existing audience already doing the behaviour
+LitterLotto went into administration July 2025 — gap in the market
+KBT needs digital engagement tool for their volunteers
+Their manual litter surveys are slow, expensive, infrequent — BIN-GO replaces them with live data
+Great British Spring Clean 2026 just finished (585,038 Litter Heroes, 451,882 bags) — timing is perfect to pitch for 2027
+
+Who to approach:
+
+Allison Ogden-Newton, CEO — in post since 2015, social entrepreneur background, appointed Non-Executive Director at Defra September 2025 (directly relevant to EPR conversations). She has authority to say yes to a pilot.
+Approach via LinkedIn, reference Spring Clean numbers and LitterLotto gap, ask for 20 minutes to demo the app
+Secondary route: KBT Local Authority Network team
+
+What KBT gets:
+
+Free digital tool for their Litter Heroes
+Real-time litter intelligence (not manual survey snapshots)
+Product-level data — what's being collected, where, when
+Stronger policy lobbying evidence for government conversations
+Campaign measurement that actually works
+
+What KBT does NOT get:
+
+Raw data or database access
+Brand-level GTIN data linked to disposal locations
+Anything they could sell to FMCG brands
+Data ownership — BIN-GO owns the data, KBT gets curated intelligence reports
+
+
+LitterLotto Research
+How it worked: Photo of litter going in bin. No barcode, no GPS, no AI analysis. Millions of photos sat unused in a database — data was a byproduct not a product.
+Why it failed:
+
+Single revenue stream — McDonald's sponsorship. When that dried up, model collapsed
+No data product
+No EPR angle
+Tech reliability issues — photos failing, no support contact
+
+Key differentiator: LitterLotto captured photos. BIN-GO captures data.
+
+The Dirty Dozen Problem
+Most littered items (cigarette butts, coffee cups, crisp packets, plastic bags) have no readable barcode. Our phased solution:
+
+Phase 1 (now): Barcode scanning — barcoded packaging → EPR compliance records
+Phase 2 (roadmap): AI image recognition — photos of non-barcode items → structured categorised records (Google Vision API / Apple Vision framework)
+Phase 3 (with partners): QR codes on bins — councils/KBT place QR codes on bins, user scans bin QR + photos litter. Proves disposal with or without barcode
+
+Key pitch line: "LitterLotto had a photo. We have a data point."
+
+Consumer Motivation (no prize draw)
+With KBT audience — civic good is sufficient motivation. App shows:
+
+Personal impact screen (items scanned, locations covered)
+Community/area stats
+Campaign contribution data
+
+Prize draw may return for general consumer launch but not for KBT pilot.
+
+Competitive Position
+
+LitterLotto dead — market vacant
+Councils who used LitterLotto actively looking for replacement
+EPR regulation live in UK — FMCG brands legally required to report disposal data
+Allison Ogden-Newton at Defra — BIN-GO data directly relevant to policy conversations happening now
+
+
+Documents Created
+
+BinGo_Partnership_Brief.docx — one page what we are and how we help KBT
+BinGo_Investor_QA.docx — 8 tough questions with honest answers
+BinGo_KBT_Pitch_v3.docx — internal pitch prep + external pitch document (latest version)
+
+
+App Status Update — May 2026
+Confirmed Working on Real iPhone ✅
+
+Camera barcode scanning — react-native-camera-kit (New Architecture compatible)
+Real GPS coordinates — confirmed Valencia coords (39, 0.36) saving to Supabase
+Supabase save — direct REST API (no client library, avoids WebSocket conflict)
+Unique device ID — react-native-device-info, real UUID saving to database
+Animated ticket reveal with spring animation
+T&Cs link at bottom of screen (placeholder URL)
+Manual barcode entry fallback
+
+Current Issue ❌
+
+GPS broke when we added T&Cs and device ID — navigator.geolocation not working
+Need to replace with @react-native-community/geolocation
+App currently crashes on scan — restore from backup or fix GPS import
+
+Next Steps to TestFlight
+
+Fix GPS (@react-native-community/geolocation)
+Personal impact screen (scan history)
+Area/community stats screen
+Upgrade Apple Developer account ($99/year)
+TestFlight setup
+Android build
+
+Tech Stack
+
+React Native 0.85
+react-native-camera-kit — barcode scanning
+@react-native-community/geolocation — GPS (to be fixed)
+react-native-device-info — unique device ID
+Supabase via direct REST fetch
+Bundle ID: com.caiman.jungle.bingo
+Apple Developer account: free (needs upgrade to $99 for TestFlight)
+iPhone 17, iOS 26
+
+Key Technical Decisions
+
+No Supabase client library — WebSocket conflict with React Native, use direct REST
+No react-native-vision-camera — NitroModules conflict, use react-native-camera-kit
+No expo-camera — initialisation issues in bare React Native
+react-native-camera-kit works with New Architecture ✅
+
+
+Paste that into your MD file and you'll have a complete save point for the Claude Project. Ready to fix that GPS and get to TestFlight? 🟢
+
 
