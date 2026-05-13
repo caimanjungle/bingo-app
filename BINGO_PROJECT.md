@@ -467,5 +467,52 @@ react-native-camera-kit works with New Architecture ✅
 
 
 Paste that into your MD file and you'll have a complete save point for the Claude Project. Ready to fix that GPS and get to TestFlight? 🟢
+## Session Log — May 13, 2026
 
+### What we did
+- Diagnosed the post-rebuild crash via `diff` against ScanScreen.backup.tsx
+- Identified the cause: `navigator.geolocation` (removed from RN core) was being used instead of the installed `@react-native-community/geolocation` package
+- Fixed by adding the missing import + changing the call site
+- Verified end-to-end on real iPhone: camera scan, GPS (real Valencia coords), device ID, Supabase save — ALL WORKING
+- Updated post-scan UX to remove prize draw wording (business model pivot reflected in app)
+- New post-scan confirmation: minimal "✓ Binned" instead of ticket reveal
+- Decision: ticket ID no longer surfaced to user (internal DB reference only)
+- Installed VS Code (also for upcoming AI MSc)
+- Started GitHub backup of the React Native project (previously local-only)
+
+### MVP1 — CONFIRMED COMPLETE ON REAL DEVICE
+- ✅ BIN-GO scan screen (bold green UI, circular SNAP IT button)
+- ✅ Camera barcode scanning (react-native-camera-kit)
+- ✅ Real GPS coordinates saving to Supabase
+- ✅ Unique device ID (react-native-device-info)
+- ✅ Supabase REST save (no client library)
+- ✅ Animated confirmation reveal
+- ✅ T&Cs link
+- ✅ Manual barcode entry fallback
+- ✅ "✓ Binned" minimal post-scan confirmation (no draw language)
+
+### Important technical notes
+- Timestamps store in UTC — convert to local time at display only (standard practice, critical for EPR multi-region reporting)
+- ScanScreen.backup.tsx kept as a working-state safety net before we did the T&Cs work — valuable, don't delete
+
+### Where we paused — GitHub backup mid-flow
+- Local git repo: ✅ all work committed (commit `fb18f76` — MVP1 milestone)
+- Git identity: ✅ configured (Caiman Jungle + real email)
+- GitHub repo created: ✅ private repo at `https://github.com/caimanjungle/BingoRN.git`
+- Remote added to local: ✅ `git remote add origin` completed
+- ❌ Push not yet completed — needs auth
+- GitHub CLI (`gh`) installed via Homebrew: ✅ v2.92.0
+- ❌ Paused before running `gh auth login`
+
+### Next session — pick up here
+1. Run `gh auth login` (walkthrough already prepared — choose GitHub.com → HTTPS → Yes authenticate Git → Login with browser → paste one-time code)
+2. Run `git push -u origin main` to push everything up
+3. Verify on github.com/caimanjungle/BingoRN that all the files arrived
+4. Then move on to **Personal Impact screen** — the simplest version is a "total binned" counter on the home screen (read from local AsyncStorage initially, swap to Supabase query later)
+5. Parked nice-to-haves: ✓ Binned fade-out animation; total counter on home screen
+
+### Parked but worth remembering
+- GTIN → product name lookup is technically easy (Open Food Facts, GS1 resolvers) but deliberately NOT surfaced in scan confirmation flow — would re-introduce noise + risk emotional friction ("you binned 12 Mars bars" vibes). Product names belong server-side (FMCG reports) and in the looking-back Personal Impact view, NOT in the scan moment.
+- The PWA `bingo-app` GitHub repo is separate from this RN project. Different codebases, different repos — don't confuse them.
+- VS Code installed and being used for code edits going forward (no more bash-only edits)
 
